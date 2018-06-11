@@ -1,0 +1,11 @@
+
+Google Places key:
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBFyC3jDrzJK-9cl0wuWZonC-JpwP5Gaho&libraries=places&callback=initMap"
+        async defer></script>
+
+
+Google Maps Key:
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBFyC3jDrzJK-9cl0wuWZonC-JpwP5Gaho"
+    async defer></script>
