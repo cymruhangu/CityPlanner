@@ -5,27 +5,18 @@
 	<link rel="stylesheet" href="main.css">
 </head>
 <body>
-	<header role="banner">
-		<!-- title and navigation -->
-	</header>
-	<section id="splash">
-		<!-- hero image of a city and form quering for city and dates -->
-	</section>
-	<main role="main">
-		<iframe src="">
-			<!-- google map -->
-		</iframe>
-		<div id="find-place">
-			<!-- form field to search for places -->
-		</div>
-		<div id="calender">
-			
-		</div>
-		<div id="places">
-			
-		</div>
-	</main>
+	<input id="pac-input" class="controls" type="text"
+        placeholder="Enter a location">
+    <div id="map"></div>
+    <div id="infowindow-content">
+      <span id="place-name"  class="title"></span><br>
+      Place ID <span id="place-id"></span><br>
+      <span id="place-address"></span>
+    </div>
+
 	<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 	<script src="main.js" type="text/javascript"></script>
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBFyC3jDrzJK-9cl0wuWZonC-JpwP5Gaho&libraries=places&callback=initMap"
+        async defer></script>
 </body>
 </html>
