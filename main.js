@@ -1,4 +1,4 @@
-myNameSpace = function(){
+// myNameSpace = function(){
 // 'use strict';
 const mapsAPIKey = 'AIzaSyBFyC3jDrzJK-9cl0wuWZonC-JpwP5Gaho';
 let map = null;
@@ -13,7 +13,7 @@ function initMap() {
 
   addMarker();
   getPlaceId();
-  getPlaceDetail();
+  // getPlaceDetail();
 
 function addMarker(){
   let input = document.getElementById('pac-input');
@@ -53,6 +53,9 @@ function addMarker(){
     infowindowContent.children['place-address'].textContent =
       place.formatted_address;
     infowindow.open(map, marker);
+    console.log(`website is ${place.website}`);
+    console.log(`phone # is ${place.formatted_phone_number}`);
+    console.log(`reviews: ${place.reviews[0].text}`);
   });
 }
 }
@@ -96,5 +99,4 @@ function getPlaceId(){
     }
   });
 }
-  return {initMap:initMap}
-}();
+// }();
