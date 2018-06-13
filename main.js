@@ -2,6 +2,7 @@ myNameSpace = function(){
 // 'use strict';
 const mapsAPIKey = 'AIzaSyBFyC3jDrzJK-9cl0wuWZonC-JpwP5Gaho';
 let map = null;
+let marker = null;
 
 // ===================
 function initMap() {
@@ -10,17 +11,23 @@ function initMap() {
     zoom: 13
   });
 
-  var input = document.getElementById('pac-input');
+  addMarker();
+  getPlaceId();
+  getPlaceDetail();
 
-  var autocomplete = new google.maps.places.Autocomplete(input);
+function addMarker(){
+  let input = document.getElementById('pac-input');
+
+  let autocomplete = new google.maps.places.Autocomplete(input);
   autocomplete.bindTo('bounds', map);
 
   map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
-
-  var infowindow = new google.maps.InfoWindow();
-  var infowindowContent = document.getElementById('infowindow-content');
+//=======================
+//Where do the marker's coords come from?  
+  let infowindow = new google.maps.InfoWindow();
+  let infowindowContent = document.getElementById('infowindow-content');
   infowindow.setContent(infowindowContent);
-  var marker = new google.maps.Marker({
+  marker = new google.maps.Marker({
     map: map
   });
   marker.addListener('click', function() {
@@ -29,7 +36,7 @@ function initMap() {
 
   autocomplete.addListener('place_changed', function() {
     infowindow.close();
-    var place = autocomplete.getPlace();
+    let place = autocomplete.getPlace();
     if (!place.geometry) {
       return;
     }
@@ -48,20 +55,46 @@ function initMap() {
     infowindow.open(map, marker);
   });
 }
+}
 
-$.ajax({
-  url: "https://maps.googleapis.com/maps/api/geocode/json",
-  type: "GET",
-  data: {
-    address: 'Penn Station',
-    key: `${mapsAPIKey}`
-  },
-  success: function(data) {
-    let placeID = data.results[0].place_id;
-    console.log(`placeID is ${placeID}`);
-  }
-});
-  return{
-    initMap:initMap
-  }
+function removeMarker(markerIndex){
+
+}
+//CORS issue getting this data
+// function getPlaceDetail(){
+//   $.ajax({
+//   url: "https://maps.googleapis.com/maps/api/place/details/",
+//   type: "GET",
+//   dataType: 'jsonp',
+//   data: {
+//     placeid: 'ChIJS_7f3yT2wokR4dsAb0bTwDo'
+//     // key: `${mapsAPIKey}`
+//   },
+//   success: function(data) {
+//     // let placeDetails = data.results[0].place_id;
+//     console.log(data);
+//   },
+//   error: function(error){
+//     console.log(error);
+//   }
+// });
+// }
+
+
+
+function getPlaceId(){
+  $.ajax({
+    url: "https://maps.googleapis.com/maps/api/geocode/json",
+    type: "GET",
+    data: {
+      address: 'Hotel Vermont',
+      key: `${mapsAPIKey}`
+    },
+    success: function(data) {
+      let placeID = data.results[0].place_id;
+      console.log(data);
+    }
+  });
+}
+  return {initMap:initMap}
 }();
