@@ -64,6 +64,7 @@ function placeSelection(){
        place.formatted_phone_number, place.website, place.reviews, place.rating, place.price_level);
 
     places.push(selected);
+    updatePlaces();
     console.log(places);
 
   });
@@ -82,7 +83,14 @@ function Place (name, address, placeID, coords, phone, website, reviews, rating,
   this.price = price;
 }
 
+function updatePlaces(){
+  let list = '';
+  places.forEach(function(el){
 
+  });
+
+
+}
 
 
 function getPlaceId(){
