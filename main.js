@@ -1,9 +1,10 @@
-// myNameSpace = function(){
-// 'use strict';
+mySpace = function(){
+'use strict';
 const mapsAPIKey = 'AIzaSyBFyC3jDrzJK-9cl0wuWZonC-JpwP5Gaho';
 let map = null;
 let marker = null;
-
+let places = [];
+let placeIndex = -1;
 // ===================
 function initMap() {
   map = new google.maps.Map(document.getElementById('map'), {
@@ -11,19 +12,18 @@ function initMap() {
     zoom: 13
   });
 
-  addMarker();
+  placeSelection();
   getPlaceId();
-  // getPlaceDetail();
 
-function addMarker(){
+
+function placeSelection(){
   let input = document.getElementById('pac-input');
 
   let autocomplete = new google.maps.places.Autocomplete(input);
   autocomplete.bindTo('bounds', map);
 
-  map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
-//=======================
-//Where do the marker's coords come from?  
+  map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);  
+  
   let infowindow = new google.maps.InfoWindow();
   let infowindowContent = document.getElementById('infowindow-content');
   infowindow.setContent(infowindowContent);
@@ -32,6 +32,7 @@ function addMarker(){
   });
   marker.addListener('click', function() {
     infowindow.open(map, marker);
+    placeIndex++;
   });
 
   autocomplete.addListener('place_changed', function() {
@@ -48,40 +49,39 @@ function addMarker(){
     });
     marker.setVisible(true);
 
-    infowindowContent.children['place-name'].textContent = place.name;
-    // infowindowContent.children['place-id'].textContent = place.place_id;
-    infowindowContent.children['place-address'].textContent =
-      place.formatted_address;
-    infowindow.open(map, marker);
+    // infowindowContent.children['place-name'].textContent = place.name;        
+    // infowindowContent.children['place-address'].textContent =
+    //   place.formatted_address;
+    // infowindowContent.children['place-website'].textContent = place.formatted_phone_number; 
+    // infowindowContent.children['place-website'].textContent = place.website;
+    // infowindow.open(map, marker);
+
     console.log(`website is ${place.website}`);
-    console.log(`phone # is ${place.formatted_phone_number}`);
-    console.log(`reviews: ${place.reviews[0].text}`);
+    // console.log(`phone # is ${place.formatted_phone_number}`);
+    console.log(`geometry: ${place.geometry.location}`);
+
+    let selected = new Place(place.name, place.formatted_address, place.place_id, place.geometry.location, +
+       place.formatted_phone_number, place.website, place.reviews, place.rating, place.price_level);
+
+    places.push(selected);
+    console.log(places);
+
   });
 }
 }
 
-function removeMarker(markerIndex){
-
+function Place (name, address, placeID, coords, phone, website, reviews, rating, price){
+  this.name = name;
+  this.address = address;
+  this.placeID = placeID;
+  this.coords = coords;
+  this.phone = phone;
+  this.website = website;
+  this.reviews = reviews;
+  this.rating = rating;
+  this.price = price;
 }
-//CORS issue getting this data
-// function getPlaceDetail(){
-//   $.ajax({
-//   url: "https://maps.googleapis.com/maps/api/place/details/",
-//   type: "GET",
-//   dataType: 'jsonp',
-//   data: {
-//     placeid: 'ChIJS_7f3yT2wokR4dsAb0bTwDo'
-//     // key: `${mapsAPIKey}`
-//   },
-//   success: function(data) {
-//     // let placeDetails = data.results[0].place_id;
-//     console.log(data);
-//   },
-//   error: function(error){
-//     console.log(error);
-//   }
-// });
-// }
+
 
 
 
@@ -99,4 +99,6 @@ function getPlaceId(){
     }
   });
 }
-// }();
+
+return {initMap:initMap}
+}();
