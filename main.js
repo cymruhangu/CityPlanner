@@ -9,7 +9,7 @@ let placeIndex = -1;
 function initMap() {
   map = new google.maps.Map(document.getElementById('map'), {
     center: {lat: 40.7829, lng: -73.9654},
-    zoom: 13
+    zoom: 12
   });
 
   placeSelection();
@@ -22,14 +22,14 @@ function placeSelection(){
   let autocomplete = new google.maps.places.Autocomplete(input);
   autocomplete.bindTo('bounds', map);
 
-  map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);  
+  map.controls[google.maps.ControlPosition.TOP_CENTER].push(input);  
   
-  let infowindow = new google.maps.InfoWindow();
-  let infowindowContent = document.getElementById('infowindow-content');
-  infowindow.setContent(infowindowContent);
-  marker = new google.maps.Marker({
-    map: map
-  });
+  // let infowindow = new google.maps.InfoWindow();
+  // let infowindowContent = document.getElementById('infowindow-content');
+  // infowindow.setContent(infowindowContent);
+  // marker = new google.maps.Marker({
+  //   map: map
+  // });
   marker.addListener('click', function() {
     infowindow.open(map, marker);
     placeIndex++;
@@ -57,11 +57,11 @@ function placeSelection(){
     // infowindow.open(map, marker);
 
     console.log(`website is ${place.website}`);
-    // console.log(`phone # is ${place.formatted_phone_number}`);
+    console.log(`phone # is ${place.formatted_phone_number}`);
     console.log(`geometry: ${place.geometry.location}`);
 
-    let selected = new Place(place.name, place.formatted_address, place.place_id, place.geometry.location, +
-       place.formatted_phone_number, place.website, place.reviews, place.rating, place.price_level);
+    let selected = new Place(place.name, place.formatted_address, place.place_id, place.geometry.location,
+     place.formatted_phone_number, place.website, place.reviews, place.rating, place.price_level);
 
     places.push(selected);
     updatePlaces();
@@ -83,13 +83,30 @@ function Place (name, address, placeID, coords, phone, website, reviews, rating,
   this.price = price;
 }
 
-function updatePlaces(){
-  let list = '';
-  places.forEach(function(el){
-
+function addMarker(props){
+  var marker = new google.maps.Marker({
+    position:props.coords,
+    map:map,
+  });
+  
+  let infoWindow = new google.maps.InfoWindow({
+    content:props.content
   });
 
+  marker.addListener('click', function(){
+    infoWindow.open(map, marker);
+  });
+  placeIndex++;
+}
 
+function updatePlaces(){
+  let list = '';
+  let i = places.length - 1;
+    $('#place-ul').append( `<li>${places[i].name}</li>
+                            <li>${places[i].address}</li>
+                            <li>${places[i].phone}</li>
+                            <li><a href="${places[i].website}" target="_blank">${places[i].website}</a></li> 
+                            <br>`);
 }
 
 
