@@ -6,15 +6,17 @@ let marker = null;
 let places = [];
 let placeIndex = -1;
 // ===================
+
 function initMap() {
   map = new google.maps.Map(document.getElementById('map'), {
     center: {lat: 40.7829, lng: -73.9654},
-    zoom: 12
+    zoom: 12,
+    gestureHandling: 'cooperative'
   });
 
   placeSelection();
   getPlaceId();
-
+  addMarker();
 
 function placeSelection(){
   let input = document.getElementById('pac-input');
@@ -30,10 +32,9 @@ function placeSelection(){
   // marker = new google.maps.Marker({
   //   map: map
   // });
-  marker.addListener('click', function() {
-    infowindow.open(map, marker);
-    placeIndex++;
-  });
+  // marker.addListener('click', function() {
+  //   infowindow.open(map, marker);
+  // });
 
   autocomplete.addListener('place_changed', function() {
     infowindow.close();
@@ -43,30 +44,29 @@ function placeSelection(){
     }
 
     // Set the position of the marker using the place ID and location.
-    marker.setPlace({
-      placeId: place.place_id,
-      location: place.geometry.location
-    });
-    marker.setVisible(true);
+    // marker.setPlace({
+    //   placeId: place.place_id,
+    //   location: place.geometry.location
+    // });
+    // marker.setVisible(true);
 
-    // infowindowContent.children['place-name'].textContent = place.name;        
-    // infowindowContent.children['place-address'].textContent =
-    //   place.formatted_address;
-    // infowindowContent.children['place-website'].textContent = place.formatted_phone_number; 
-    // infowindowContent.children['place-website'].textContent = place.website;
-    // infowindow.open(map, marker);
 
-    console.log(`website is ${place.website}`);
-    console.log(`phone # is ${place.formatted_phone_number}`);
-    console.log(`geometry: ${place.geometry.location}`);
+    // console.log(`website is ${place.website}`);
+    // console.log(`phone # is ${place.formatted_phone_number}`);
+    // console.log(`geometry: ${place.geometry.location}`);
 
     let selected = new Place(place.name, place.formatted_address, place.place_id, place.geometry.location,
      place.formatted_phone_number, place.website, place.reviews, place.rating, place.price_level);
 
+    //push new place to places array
     places.push(selected);
+    placesIndex++;
+    //new place is created. Now we can create marker and info
+    newMarker(selected);
     updatePlaces();
     console.log(places);
-
+    ///clear the autocomplete input
+    document.getElementById('pac-input').value = '';
   });
 }
 }
@@ -75,7 +75,7 @@ function Place (name, address, placeID, coords, phone, website, reviews, rating,
   this.name = name;
   this.address = address;
   this.placeID = placeID;
-  this.coords = coords;
+  this.coords = coords; 
   this.phone = phone;
   this.website = website;
   this.reviews = reviews;
@@ -83,20 +83,19 @@ function Place (name, address, placeID, coords, phone, website, reviews, rating,
   this.price = price;
 }
 
-function addMarker(props){
+function addMarker(newPlace){
   var marker = new google.maps.Marker({
-    position:props.coords,
-    map:map,
+    position:{lat: 40.7794, lng: -73.9632},
+    map:map
   });
   
   let infoWindow = new google.maps.InfoWindow({
-    content:props.content
+    content: 'blah'
   });
 
   marker.addListener('click', function(){
     infoWindow.open(map, marker);
   });
-  placeIndex++;
 }
 
 function updatePlaces(){
