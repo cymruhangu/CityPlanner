@@ -11,7 +11,7 @@
 
 - geometry.location doesn't seem to get lat and long. Use geocode API to grab lat and long for marker. 
 
-
+- Limit range of autocomplete to X miles
 
 
 ## Question List:
