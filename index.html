@@ -6,6 +6,27 @@
 	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 </head>
 <body>
+  <section id="splash" role="region">
+    <div id="intro"><h1>City Planner App</h1></div>
+    <form class="start-form">
+      <label>Destination City:
+        <select name="city" size="1">
+          <option value="NY">New York</option>
+          <option value="PHL">Philadelphia</option>
+          <option value="BSTN">Boston</option>
+          <option value="DC">Washington</option>
+          <option value="CHI">Chicago</option>
+        </select>
+      </label>
+      <label for="arrive">Arrival:
+        <input type="date" name="arrive">
+      </label>
+      <label for="depart">Departure:
+        <input class="date" type="date"
+      </label>
+        <button type="submit">Submit</button>
+    </form>
+  </section>
 	<input id="pac-input" class="controls" type="text"
         placeholder="Enter a location">
     <div id="map"></div>
