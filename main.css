@@ -28,3 +28,20 @@ ul {
 	height: 25px;
 	background-color: pink;
 }
+
+#places {
+	background-color: aliceblue;
+	width: 49%;
+	height: 500px;
+	display: inline-block;
+	margin: 0 auto;
+	padding: 0;
+}
+#itinerary {
+	background-color: aquamarine;
+	width: 49%;
+	height: 500px;
+	display: inline-block;
+	margin: 0 auto;
+	padding: 0;
+}

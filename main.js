@@ -25,6 +25,7 @@ let placeIndex = -1;
 let cityCenter = {lat: 40.7829, lng: -73.9654};
 let firstDay = '';
 let lastDay = '';
+let numDays = 0;
 // ===================
 /* 
   - map is hidden at start
@@ -46,12 +47,17 @@ function getCity(){
     e.preventDefault();
     let selectedCity = $('select#city').find('option:selected').val();
     console.log(`city is: ${selectedCity}`);
-    firstDay = $('#arrive').val();
-    lastDay = $('#depart').val();
+    firstDay = new Date($('#arrive').val());
+    lastDay = new Date($('#depart').val());
     numDays = daysCalc(firstDay, lastDay);
-    console.log(`firstDay is ${firstDay} lastDay is ${lastDay} that is x days`);
+    console.log(`firstDay is ${firstDay} lastDay is ${lastDay} that is ${numDays} days`);
   });
 }
+
+function daysCalc(date1, date2){
+  return parseInt((date2 - date1) / (24 * 3600 * 1000));
+}
+
 placeSelection();
 
 function placeSelection(){
