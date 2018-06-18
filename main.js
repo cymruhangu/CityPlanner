@@ -23,6 +23,8 @@ let marker = null;
 let myPlaces = [];
 let placeIndex = -1;
 let cityCenter = {lat: 40.7829, lng: -73.9654};
+let firstDay = '';
+let lastDay = '';
 // ===================
 /* 
   - map is hidden at start
@@ -32,15 +34,25 @@ let cityCenter = {lat: 40.7829, lng: -73.9654};
 */
 
 function initMap() {
+  getCity();
   map = new google.maps.Map(document.getElementById('map'), {
     center: cityCenter,
     zoom: 12,
     gestureHandling: 'cooperative'
   });
 
-  placeSelection();
-  // getPlaceId();
-  // addMarker();
+function getCity(){
+  $('#trip-form').submit(function(e){
+    e.preventDefault();
+    let selectedCity = $('select#city').find('option:selected').val();
+    console.log(`city is: ${selectedCity}`);
+    firstDay = $('#arrive').val();
+    lastDay = $('#depart').val();
+    numDays = daysCalc(firstDay, lastDay);
+    console.log(`firstDay is ${firstDay} lastDay is ${lastDay} that is x days`);
+  });
+}
+placeSelection();
 
 function placeSelection(){
   let input = document.getElementById('pac-input');
@@ -49,16 +61,6 @@ function placeSelection(){
   autocomplete.bindTo('bounds', map);
 
   map.controls[google.maps.ControlPosition.TOP_CENTER].push(input);  
-  
-  // let infowindow = new google.maps.InfoWindow();
-  // let infowindowContent = document.getElementById('infowindow-content');
-  // infowindow.setContent(infowindowContent);
-  // marker = new google.maps.Marker({
-  //   map: map
-  // });
-  // marker.addListener('click', function() {
-  //   infowindow.open(map, marker);
-  // });
 
   autocomplete.addListener('place_changed', function() {
     // infowindow.close();
@@ -67,13 +69,6 @@ function placeSelection(){
       return;
     }
 
-    // Set the position of the marker using the place ID and location.
-    // marker.setPlace({
-    //   placeId: place.place_id,
-    //   location: place.geometry.location
-    // });
-    // marker.setVisible(true);
-    
     let selected = new Place(place.name, place.formatted_address, place.place_id,
      place.formatted_phone_number, place.website, place.reviews, place.rating, place.price_level);
     //push new place to places array
@@ -99,8 +94,6 @@ function Place (name, address, placeID, phone, website, reviews, rating, price){
   this.price = price;
 }
 
-
-
 function updatePlaces(){
   let list = '';
   let i = myPlaces.length - 1;
@@ -110,7 +103,6 @@ function updatePlaces(){
                             <li><a href="${myPlaces[i].website}" target="_blank">${myPlaces[i].website}</a></li> 
                             <br>`);
 }
-
 
 function setCoords(index){
   $.ajax({

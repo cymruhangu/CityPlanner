@@ -8,9 +8,9 @@
 <body>
   <section id="splash" role="region">
     <div id="intro"><h1>City Planner App</h1></div>
-    <form class="start-form">
+    <form id="trip-form">
       <label>Destination City:
-        <select name="city" size="1">
+        <select id="city" size="1">
           <option value="NY">New York</option>
           <option value="PHL">Philadelphia</option>
           <option value="BSTN">Boston</option>
@@ -19,10 +19,10 @@
         </select>
       </label>
       <label for="arrive">Arrival:
-        <input type="date" name="arrive">
+        <input type="date" id="arrive">
       </label>
       <label for="depart">Departure:
-        <input class="date" type="date"
+        <input type="date" id="depart">
       </label>
         <button type="submit">Submit</button>
     </form>
