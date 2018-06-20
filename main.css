@@ -32,16 +32,18 @@ ul {
 #places {
 	background-color: aliceblue;
 	width: 49%;
-	height: 500px;
+	/* height: 500px; */
 	display: inline-block;
 	margin: 0 auto;
 	padding: 0;
+	vertical-align: top;
 }
 #itinerary {
 	background-color: aquamarine;
 	width: 49%;
-	height: 500px;
+	/* height: 500px; */
 	display: inline-block;
 	margin: 0 auto;
 	padding: 0;
+	vertical-align: top;
 }

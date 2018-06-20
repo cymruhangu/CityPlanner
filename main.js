@@ -23,9 +23,9 @@ let marker = null;
 let myPlaces = [];
 let placeIndex = -1;
 let cityCenter = {lat: 40.7829, lng: -73.9654};
-let firstDay = '';
-let lastDay = '';
-let numDays = 0;
+// let firstDay = '';
+// let lastDay = '';
+// let numDays = 0;
 // ===================
 /* 
   - map is hidden at start
@@ -47,16 +47,33 @@ function getCity(){
     e.preventDefault();
     let selectedCity = $('select#city').find('option:selected').val();
     console.log(`city is: ${selectedCity}`);
-    firstDay = new Date($('#arrive').val());
-    lastDay = new Date($('#depart').val());
-    numDays = daysCalc(firstDay, lastDay);
-    console.log(`firstDay is ${firstDay} lastDay is ${lastDay} that is ${numDays} days`);
+    let firstDay = new Date($('#arrive').val());
+    let lastDay = new Date($('#depart').val());
+    // let firstDay = first.toLocaleDateString();
+    // let lastDay = last.toLocaleDateString();
+    let numDays = daysCalc(firstDay, lastDay);
+    let offset = new Date().getTimezoneOffset();
+    console.log(`offset is ${offset}`);
+    console.log(`firstDay is ${firstDay} lastDay is ${lastDay.getUTCDate()} that is ${numDays} days`);
+    // createItinerary(firstDay, lastDay);
   });
 }
 
 function daysCalc(date1, date2){
   return parseInt((date2 - date1) / (24 * 3600 * 1000));
 }
+
+// function createItinerary(firstDay, lastDay){
+//   //create object with date and array of places
+//   for(let i = 0; i<numDays.length; i++){
+//     let itinerary = [{date:  Date,
+//                     places: [place1, place2, etc]}]
+
+//                     let itinerary = {
+//                       '06-19-2018': [ place 1, place 2]
+//                     }
+//   }
+// }
 
 placeSelection();
 
