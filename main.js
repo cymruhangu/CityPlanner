@@ -49,12 +49,10 @@ function getCity(){
     console.log(`city is: ${selectedCity}`);
     let firstDay = new Date($('#arrive').val());
     let lastDay = new Date($('#depart').val());
-    // let firstDay = first.toLocaleDateString();
-    // let lastDay = last.toLocaleDateString();
+    let firstDate = `${firstDay.getUTCMonth()}-${firstDay.getUTCDate()}-${firstDay.getUTCFullYear()}`;
+    let lastDate = `${lastDay.getUTCFullYear()}-${lastDay.getUTCMonth()}-${lastDay.getUTCDate()}`;
     let numDays = daysCalc(firstDay, lastDay);
-    let offset = new Date().getTimezoneOffset();
-    console.log(`offset is ${offset}`);
-    console.log(`firstDay is ${firstDay} lastDay is ${lastDay.getUTCDate()} that is ${numDays} days`);
+    console.log(`firstDay is ${firstDate} lastDay is ${lastDate} that is ${numDays} days`);
     // createItinerary(firstDay, lastDay);
   });
 }
