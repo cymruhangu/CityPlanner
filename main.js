@@ -133,7 +133,17 @@ function updatePlaces(){
     $('#place-ul').append( `<li>${myPlaces[i].name}</li>
                             <li>${myPlaces[i].address}</li>
                             <li>${myPlaces[i].phone}</li>
-                            <li><a href="${myPlaces[i].website}" target="_blank">${myPlaces[i].website}</a></li> 
+                            <li><a href="${myPlaces[i].website}" target="_blank">${myPlaces[i].website}</a></li>
+  <div class="dropdown show">
+    <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      Actions
+    </a>
+    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+      <a class="dropdown-item" href="#">Add to Date</a>
+      <a class="dropdown-item" href="#">Find nearby restaurants</a>
+      <a class="dropdown-item" href="#">Delete</a>
+    </div>
+  </div>
                             <br>`);
 }
 
