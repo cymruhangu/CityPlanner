@@ -23,6 +23,7 @@ let marker = null;
 let myPlaces = [];
 let placeIndex = -1;
 let cityCenter = {lat: 40.7829, lng: -73.9654};
+let itinerary =[];
 // let firstDay = '';
 // let lastDay = '';
 // let numDays = 0;
@@ -47,13 +48,12 @@ function getCity(){
     e.preventDefault();
     let selectedCity = $('select#city').find('option:selected').val();
     console.log(`city is: ${selectedCity}`);
-    let firstDay = new Date($('#arrive').val());
-    let lastDay = new Date($('#depart').val());
-    let firstDate = `${firstDay.getUTCMonth()}-${firstDay.getUTCDate()}-${firstDay.getUTCFullYear()}`;
-    let lastDate = `${lastDay.getUTCFullYear()}-${lastDay.getUTCMonth()}-${lastDay.getUTCDate()}`;
-    let numDays = daysCalc(firstDay, lastDay);
-    console.log(`firstDay is ${firstDate} lastDay is ${lastDate} that is ${numDays} days`);
-    // createItinerary(firstDay, lastDay);
+    let first = moment(new Date($('#arrive').val()));
+    let last = moment(new Date($('#depart').val()));
+    let offset = new Date().getTimezoneOffset();
+    let firstDay = moment(first).add(offset, 'minutes');
+    let lastDay = moment(last).add(offset, 'minutes');
+    createItinerary(firstDay, lastDay);
   });
 }
 
@@ -61,17 +61,29 @@ function daysCalc(date1, date2){
   return parseInt((date2 - date1) / (24 * 3600 * 1000));
 }
 
-// function createItinerary(firstDay, lastDay){
-//   //create object with date and array of places
-//   for(let i = 0; i<numDays.length; i++){
-//     let itinerary = [{date:  Date,
-//                     places: [place1, place2, etc]}]
+function createItinerary(firstDay, lastDay){
+  let numDays = daysCalc(firstDay, lastDay);
+   //create object with date and array of places
+  for(let i = 0; i<numDays+1; i++){
+    let newDate = moment(firstDay).add(i, 'days');
+    let placesArray = [];
+    let newDay = new cityDay(newDate, placesArray);
+    itinerary.push(newDay);
+  }
+  console.log(itinerary);
+  updateSchedule();
+}
 
-//                     let itinerary = {
-//                       '06-19-2018': [ place 1, place 2]
-//                     }
-//   }
-// }
+function cityDay(date, placesArray){
+  this.date = date;
+  this.places = placesArray
+}
+
+function updateSchedule(){
+  for(let i = 0; i<itinerary.length; i++){
+    $('#dates-ul').append(`<li>${moment(itinerary[i].date).format("dddd, MMMM Do YYYY")}`);
+  }
+}
 
 placeSelection();
 
@@ -116,7 +128,7 @@ function Place (name, address, placeID, phone, website, reviews, rating, price){
 }
 
 function updatePlaces(){
-  let list = '';
+  // let list = '';
   let i = myPlaces.length - 1;
     $('#place-ul').append( `<li>${myPlaces[i].name}</li>
                             <li>${myPlaces[i].address}</li>
