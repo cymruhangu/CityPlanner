@@ -1,16 +1,17 @@
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>MK's City Planner</title>
-	<link rel="stylesheet" href="main.css">
-	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <link rel="stylesheet" href="main.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
+   integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
 </head>
 <body>
   <section id="splash" role="region">
     <div id="intro"><h1>City Planner App</h1></div>
-    <form class="start-form">
+    <form id="trip-form">
       <label>Destination City:
-        <select name="city" size="1">
+        <select id="city" size="1">
           <option value="NY">New York</option>
           <option value="PHL">Philadelphia</option>
           <option value="BSTN">Boston</option>
@@ -19,10 +20,10 @@
         </select>
       </label>
       <label for="arrive">Arrival:
-        <input type="date" name="arrive">
+        <input type="date" id="arrive">
       </label>
       <label for="depart">Departure:
-        <input class="date" type="date"
+        <input type="date" id="depart">
       </label>
         <button type="submit">Submit</button>
     </form>
@@ -38,15 +39,17 @@
       <br>
       <span id="place-website"></span>
     </div>
-    <section id="places">
-      <ul id="place-ul" class="lists"></ul>
+    <section id="results">
+      <div id="places"></div>
+      <div id="itinerary">
+        <ul id="dates-ul" class="lists"></ul>
+      </div>
     </section>
-    <section id="itinerary">
-      <ul id="dates" class="lists"></ul>
-    </section>
-
+  
 	<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
-	<script src="main.js" type="text/javascript"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
+  <script src="main.js" type="text/javascript"></script>
 	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBFyC3jDrzJK-9cl0wuWZonC-JpwP5Gaho&libraries=places&callback=mySpace.initMap"
         async defer></script>
 </body>
