@@ -81,7 +81,11 @@ function cityDay(date, placesArray){
 
 function updateSchedule(){
   for(let i = 0; i<itinerary.length; i++){
-    $('#dates-ul').append(`<li>${moment(itinerary[i].date).format("dddd, MMMM Do YYYY")}`);
+    $('#dates-ul').append(`<div id="day${i}" class="dayDiv"><span class="day">${moment(itinerary[i].date).format("dddd, MMMM Do YYYY")}</span>
+    <ul id="date${i}">
+      <li>Place 1</li>
+      <li>Place 2</li>
+    </ul></div>`);
   }
 }
 
@@ -130,22 +134,17 @@ function Place (name, address, placeID, phone, website, reviews, rating, price){
 function updatePlaces(){
   // let list = '';
   let i = myPlaces.length - 1;
-    $('#place-ul').append( `<li>${myPlaces[i].name}</li>
-                            <li>${myPlaces[i].address}</li>
-                            <li>${myPlaces[i].phone}</li>
-                            <li><a href="${myPlaces[i].website}" target="_blank">${myPlaces[i].website}</a></li>
-  <div class="dropdown show">
-    <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-      Actions
-    </a>
-    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-      <a class="dropdown-item" href="#">Add to Date</a>
-      <a class="dropdown-item" href="#">Find nearby restaurants</a>
-      <a class="dropdown-item" href="#">Delete</a>
-    </div>
-  </div>
-                            <br>`);
+      $('#places').append( `
+        <div id="${myPlaces[i].placeID}" class="places-detail">
+          <ul class="place-info:">
+            <li>${myPlaces[i].name}</li>
+            <li>${myPlaces[i].address}</li>
+            <li>${myPlaces[i].phone}</li>
+            <li><a href="${myPlaces[i].website}" target="_blank">${myPlaces[i].website}</a></li>
+          </ul>
+        </div>`);
 }
+
 
 function setCoords(index){
   $.ajax({

@@ -18,9 +18,11 @@ body, main {
 	top: 10px;
 }
 
-ul {
+li {
 	list-style-type: none;
+	margin-left: 15px;
 }
+
 
 #pac-input.controls {
 	margin-top: 20px;
@@ -32,18 +34,31 @@ ul {
 #places {
 	background-color: aliceblue;
 	width: 49%;
-	/* height: 500px; */
+	height: 800px;
 	display: inline-block;
 	margin: 0 auto;
 	padding: 0;
 	vertical-align: top;
 }
+.places-detail {
+	border: 1px solid black;
+	width: 50%;
+}
 #itinerary {
 	background-color: aquamarine;
 	width: 49%;
-	/* height: 500px; */
+	height: 800px;
 	display: inline-block;
 	margin: 0 auto;
 	padding: 0;
 	vertical-align: top;
+}
+
+.dayDiv{
+	border: 1px solid black;
+	width: 75%;
+	margin: 0 auto;
+}
+.day {
+	font-weight: bold;
 }
