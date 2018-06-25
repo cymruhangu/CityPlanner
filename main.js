@@ -79,13 +79,11 @@ function cityDay(date, placesArray){
   this.places = placesArray
 }
 
+//Need date to be a title and add a second div as the dragula target.
 function updateSchedule(){
   for(let i = 0; i<itinerary.length; i++){
-    $('#dates-ul').append(`<div id="day${i}" class="dayDiv"><span class="day">${moment(itinerary[i].date).format("dddd, MMMM Do YYYY")}</span>
-    <ul id="date${i}">
-      <li>Place 1</li>
-      <li>Place 2</li>
-    </ul></div>`);
+    $('#itinerary').append(`<div id="day${i}" class="dayDiv"><span class="day">${moment(itinerary[i].date).format
+      ("dddd, MMMM Do YYYY")}:</span></div>`);
   }
 }
 
@@ -135,7 +133,7 @@ function updatePlaces(){
   // let list = '';
   let i = myPlaces.length - 1;
       $('#places').append( `
-        <div id="${myPlaces[i].placeID}" class="places-detail">
+        <div id="${myPlaces[i].placeID}" class="place-card">
           <ul class="place-info:">
             <li>${myPlaces[i].name}</li>
             <li>${myPlaces[i].address}</li>
