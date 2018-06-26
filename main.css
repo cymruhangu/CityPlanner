@@ -79,3 +79,7 @@ li {
 	height: 500px;
 	background-color: bisque;
 }
+
+#place-name {
+	font-weight: bold;
+}

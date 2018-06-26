@@ -120,7 +120,8 @@ function placeSelection(){
 
 function Place (name, address, placeID, phone, website, reviews, rating, price){
   this.name = name;
-  this.address = address;
+  // this.address = address.slice(0, address.length - 10);
+  this.address - address;
   this.placeID = placeID;
   this.phone = phone;
   this.website = website;
@@ -133,16 +134,72 @@ function updatePlaces(){
   // let list = '';
   let i = myPlaces.length - 1;
       $('#places').append( `
-        <div id="${myPlaces[i].placeID}" class="place-card">
+        <div id="${myPlaces[i].placeID}" class="place-card" draggable="true">
           <ul class="place-info:">
-            <li>${myPlaces[i].name}</li>
+            <li><span id="place-name" >${myPlaces[i].name}</span></li>
             <li>${myPlaces[i].address}</li>
             <li>${myPlaces[i].phone}</li>
             <li><a href="${myPlaces[i].website}" target="_blank">${myPlaces[i].website}</a></li>
           </ul>
         </div>`);
+        addDnD(myPlaces[i].placeID);
 }
 
+
+function addDnD(placeID){
+  $(`#${placeID}`).draggable({
+    revert: true,
+    helper: function() {
+        var container = $('<div/>');
+        var dragged = $(this);
+        container.append(dragged.clone());
+        return container;
+    }
+  });
+
+// Drop
+  $('.dayDiv').droppable({
+    tolerance: 'pointer',
+      drop: function(event, ui) {
+        $(this).append($(ui.helper.children()));
+      },
+      out: function(event, ui) {
+        $(ui.draggable).fadeOut(600, function(){
+          this.remove();
+        });
+      }
+  });
+}
+
+// function addDnD(placeID){
+//   console.log("addDnD ran");
+//   $(`#${placeID}`).draggable({
+//     cursor: 'move',
+//     revert: 'invalid',
+//     helper: 'clone'
+//   });
+
+//   $('.dayDiv').droppable({
+//     accept: `#${placeID}`,
+//     hoverClass: 'ui-state-active',
+//     drop: function(event, ui) {
+//       if ($(ui.draggable).hasClass('new')) {
+//         $('.new').draggable({
+//             revert: true
+//         });
+//     } else {
+//         $(this).append($(ui.draggable).clone().draggable({
+//             helper: "original"
+//         }).addClass('new'));
+//     }
+//   },
+//   out: function (event, ui) {
+//     $(ui.draggable).fadeOut(1000, function () {
+//         $(this).remove();
+//     });
+// }
+//   });  
+// }
 
 function setCoords(index){
   $.ajax({
