@@ -8,9 +8,9 @@ body, main {
 }
 
 #map {
-	width: 80%;
-	height: 800px;
-	margin: 0 auto;
+	width: 50%;
+	height: 600px;
+	/* margin: 0 auto; */
 }
 
 #place-input {

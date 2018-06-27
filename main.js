@@ -17,17 +17,17 @@ const cityCenters = [
         { city: "CHI",
           center: {lat: 41.8781, lng: -87.6298}
         },
+        { city: "NOLA",
+          center: {lat: 29.9511, lng: -90.0715}
+        }
 ];
 let map = null;
 let marker = null;
 let myPlaces = [];
 let placeIndex = -1;
-let cityCenter = {lat: 40.7829, lng: -73.9654};
+let cityCenter = {lat: 29.9511, lng: -90.0715};
 let itinerary =[];
-// let firstDay = '';
-// let lastDay = '';
-// let numDays = 0;
-// ===================
+
 /* 
   - map is hidden at start
   - default city is NY
@@ -120,7 +120,7 @@ function placeSelection(){
 
 function Place (name, address, placeID, phone, website, reviews, rating, price){
   this.name = name;
-  // this.address = address.slice(0, address.length - 10);
+  this.address = address.slice(0, address.length - 10);
   this.address - address;
   this.placeID = placeID;
   this.phone = phone;
@@ -146,60 +146,60 @@ function updatePlaces(){
 }
 
 
-function addDnD(placeID){
-  $(`#${placeID}`).draggable({
-    revert: true,
-    helper: function() {
-        var container = $('<div/>');
-        var dragged = $(this);
-        container.append(dragged.clone());
-        return container;
-    }
-  });
-
-// Drop
-  $('.dayDiv').droppable({
-    tolerance: 'pointer',
-      drop: function(event, ui) {
-        $(this).append($(ui.helper.children()));
-      },
-      out: function(event, ui) {
-        $(ui.draggable).fadeOut(600, function(){
-          this.remove();
-        });
-      }
-  });
-}
-
 // function addDnD(placeID){
-//   console.log("addDnD ran");
 //   $(`#${placeID}`).draggable({
-//     cursor: 'move',
-//     revert: 'invalid',
-//     helper: 'clone'
+//     revert: true,
+//     helper: function() {
+//         var container = $('<div/>');
+//         var dragged = $(this);
+//         container.append(dragged.clone());
+//         return container;
+//     }
 //   });
 
+// Drop
 //   $('.dayDiv').droppable({
-//     accept: `#${placeID}`,
-//     hoverClass: 'ui-state-active',
-//     drop: function(event, ui) {
-//       if ($(ui.draggable).hasClass('new')) {
-//         $('.new').draggable({
-//             revert: true
+//     tolerance: 'pointer',
+//       drop: function(event, ui) {
+//         $(this).append($(ui.helper.children()));
+//       },
+//       out: function(event, ui) {
+//         $(ui.draggable).fadeOut(600, function(){
+//           this.remove();
 //         });
-//     } else {
-//         $(this).append($(ui.draggable).clone().draggable({
-//             helper: "original"
-//         }).addClass('new'));
-//     }
-//   },
-//   out: function (event, ui) {
-//     $(ui.draggable).fadeOut(1000, function () {
-//         $(this).remove();
-//     });
+//       }
+//   });
 // }
-//   });  
-// }
+
+function addDnD(placeID){
+  console.log("addDnD ran");
+  $(`#${placeID}`).draggable({
+    cursor: 'move',
+    revert: 'invalid',
+    helper: 'clone'
+  });
+
+  $('.dayDiv').droppable({
+    accept: `#${placeID}`,
+    hoverClass: 'ui-state-active',
+    drop: function(event, ui) {
+      if ($(ui.draggable).hasClass('new')) {
+        $('.new').draggable({
+            revert: true
+        });
+    } else {
+        $(this).append($(ui.draggable).clone().draggable({
+            helper: "original"
+        }).addClass('new'));
+    }
+  },
+    out: function (event, ui) {
+      $(ui.draggable).fadeOut(1000, function() {
+        $(this).remove();
+      });
+    }
+  });  
+}
 
 function setCoords(index){
   $.ajax({
