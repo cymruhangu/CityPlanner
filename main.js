@@ -25,7 +25,7 @@ let map = null;
 let marker = null;
 let myPlaces = [];
 let placeIndex = -1;
-let cityCenter = {lat: 29.9511, lng: -90.0715};
+let cityCenter = {lat: 40.7829, lng: -73.9654};
 let itinerary =[];
 
 /* 
@@ -41,20 +41,35 @@ function initMap() {
     center: cityCenter,
     zoom: 12,
     gestureHandling: 'cooperative'
-  });
+  });  
 
 function getCity(){
   $('#trip-form').submit(function(e){
     e.preventDefault();
     let selectedCity = $('select#city').find('option:selected').val();
     console.log(`city is: ${selectedCity}`);
+    setCenter(selectedCity);
     let first = moment(new Date($('#arrive').val()));
     let last = moment(new Date($('#depart').val()));
     let offset = new Date().getTimezoneOffset();
     let firstDay = moment(first).add(offset, 'minutes');
     let lastDay = moment(last).add(offset, 'minutes');
     createItinerary(firstDay, lastDay);
+    $('#splash').fadeOut(600, function(){
+      $('#exploration').fadeIn(600);
+    });
   });
+}
+
+function setCenter(cityAbbrv){
+  for(let i = 0; i <cityCenters.length; i++){
+    if(cityCenters[i].city === cityAbbrv){
+      let Lat = cityCenters[i].center.lat;
+      let Lng = cityCenters[i].center.lng;
+      console.log(`setting center to ${cityAbbrv}`);
+      map.setCenter(cityCenters[i].center);
+    }
+  }
 }
 
 function daysCalc(date1, date2){
@@ -83,7 +98,7 @@ function cityDay(date, placesArray){
 function updateSchedule(){
   for(let i = 0; i<itinerary.length; i++){
     $('#itinerary').append(`<div id="day${i}" class="dayDiv"><span class="day">${moment(itinerary[i].date).format
-      ("dddd, MMMM Do YYYY")}:</span></div>`);
+      ("ddd,ll")}:</span></div>`);
   }
 }
 
@@ -117,7 +132,6 @@ function placeSelection(){
   });
 }
 }
-
 function Place (name, address, placeID, phone, website, reviews, rating, price){
   this.name = name;
   this.address = address.slice(0, address.length - 10);

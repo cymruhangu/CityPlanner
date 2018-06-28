@@ -1,52 +1,58 @@
 <html lang="en">
 <head>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>MK's City Planner</title>
+  <title>MK's City Planner</title>
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.1.1/normalize.min.css">
   <link rel="stylesheet" href="main.css">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
    integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css">
 </head>
 <body>
-  <section id="splash" role="region">
-    <div id="intro"><h1>City Planner App</h1></div>
-    <form id="trip-form">
-      <label>Destination City:
-        <select id="city" size="1">
-          <option value="NY">New York</option>
-          <option value="PHL">Philadelphia</option>
-          <option value="BSTN">Boston</option>
-          <option value="DC">Washington</option>
-          <option value="CHI">Chicago</option>
-          <option value="NOLA">New Orleans</option>
-        </select>
-      </label>
-      <label for="arrive">Arrival:
-        <input type="date" id="arrive">
-      </label>
-      <label for="depart">Departure:
-        <input type="date" id="depart">
-      </label>
-        <button type="submit">Submit</button>
-    </form>
-  </section>
-	<input id="pac-input" class="controls" type="text"
-        placeholder="Enter a location">
-    <div id="map"></div>
-    <div id="infowindow-content">
-      <span id="place-name"  class="title"></span><br>
-      <span id="place-address"></span>
-      <br>
-      <span id="place-phone"></span>
-      <br>
-      <span id="place-website"></span>
-    </div>
-    <section id="results">
-      <div id="places"></div>
-      <div id="itinerary"></div>
-    <!-- <div id="display"></div> -->
+  <main>
+    <section id="splash" role="region">
+      <div id="intro">
+        <span id="intro1"><h1>Five Days in the City</h1></span>
+        <span id="intro2"><h3>Plan and Visualize Your Visit</h3></span>
+        <span id="intro3"><h4>Select a City and Date:</h4></span>
+        <form id="trip-form">
+          <label>Destination City:
+            <select id="city" size="1">
+              <option value="NY">New York</option>
+              <option value="PHL">Philadelphia</option>
+              <option value="BSTN">Boston</option>
+              <option value="DC">Washington</option>
+              <option value="CHI">Chicago</option>
+              <option value="NOLA">New Orleans</option>
+            </select>
+          </label>
+          <label for="arrive">Arrival:
+            <input type="date" id="arrive">
+          </label>
+          <label for="depart">Departure:
+            <input type="date" id="depart">
+          </label>
+            <button type="submit">Submit</button>
+        </form>
+      </div>
     </section>
-  
+    <section id="exploration">
+      <input id="pac-input" class="controls" type="text" placeholder="Enter a location">
+      <div id="map"></div>
+      <div id="itinerary"></div>
+      <div id="infowindow-content">
+        <span id="place-name"  class="title"></span><br>
+        <span id="place-address"></span>
+        <br>
+        <span id="place-phone"></span>
+        <br>
+        <span id="place-website"></span>
+      </div>
+      
+      <div id="places"></div>
+      <!-- <div id="display"></div> -->
+    </section>
+  </main>
 	<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
