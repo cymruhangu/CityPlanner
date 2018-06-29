@@ -7,9 +7,37 @@ body, main {
 	height: 100%;
 }
 
-#map {
+#splash {
+	position: relative;
 	width: 100%;
-	height: 75%;
+	height:100%;
+	color: white;
+	background-image: url("https://images.unsplash.com/photo-1496588152823-\
+	86ff7695e68f?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=be35499188c292144ed3bfc3dac2f3fa&auto=format&fit=crop&w=1350&q=80");
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover; 
+	
+}
+
+#splash h1 {
+	font-size: 5em;
+}
+#intro {
+	position: absolute;
+	top: 35%;
+	margin: 0 auto;
+	text-align: center;
+	width: 100%;
+}
+#exploration {
+	display: none;
+}
+#map {
+	width: 60%;
+	height: 600px;
+	overflow: auto;
+	/* margin: 0 auto; */
 }
 
 #place-input {
@@ -23,7 +51,6 @@ li {
 	margin-left: 15px;
 }
 
-
 #pac-input.controls {
 	margin-top: 20px;
 	width: 250px;
@@ -33,32 +60,54 @@ li {
 
 #places {
 	background-color: aliceblue;
-	width: 49%;
-	height: 800px;
-	display: inline-block;
-	margin: 0 auto;
-	padding: 0;
-	vertical-align: top;
+	width: 85%;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: flex-start;
+	justify-content: space-evenly;
 }
-.places-detail {
+.place-card {
 	border: 1px solid black;
-	width: 50%;
+	border-radius: 20px;
+	width: 300px;
+	background-color: #b1c4e2;
+	display: block;
 }
+.place-card ul, .place-card {
+	margin-left: 0;
+	padding: 0;
+}
+
 #itinerary {
 	background-color: aquamarine;
-	width: 49%;
-	height: 800px;
-	display: inline-block;
-	margin: 0 auto;
-	padding: 0;
-	vertical-align: top;
+	width: 40%;
+	height: 600px;
+	position: absolute;
+	top: 0;
+	right: 0;
 }
 
 .dayDiv{
+	display: block;
+	position: relative;
+	overflow: hidden;
+	height: 120px;
+	width: 140px;
 	border: 1px solid black;
-	width: 75%;
-	margin: 0 auto;
+	font-size: .6em;
+	text-align: center;
 }
 .day {
+	font-weight: bold;
+}
+
+#drop-target {
+	border: 1px solid red;
+	width: 500px;
+	height: 500px;
+	background-color: bisque;
+}
+
+#place-name {
 	font-weight: bold;
 }

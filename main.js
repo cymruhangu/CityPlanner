@@ -17,6 +17,9 @@ const cityCenters = [
         { city: "CHI",
           center: {lat: 41.8781, lng: -87.6298}
         },
+        { city: "NOLA",
+          center: {lat: 29.9511, lng: -90.0715}
+        }
 ];
 let map = null;
 let marker = null;
@@ -24,10 +27,7 @@ let myPlaces = [];
 let placeIndex = -1;
 let cityCenter = {lat: 40.7829, lng: -73.9654};
 let itinerary =[];
-// let firstDay = '';
-// let lastDay = '';
-// let numDays = 0;
-// ===================
+
 /* 
   - map is hidden at start
   - default city is NY
@@ -41,20 +41,35 @@ function initMap() {
     center: cityCenter,
     zoom: 12,
     gestureHandling: 'cooperative'
-  });
+  });  
 
 function getCity(){
   $('#trip-form').submit(function(e){
     e.preventDefault();
     let selectedCity = $('select#city').find('option:selected').val();
     console.log(`city is: ${selectedCity}`);
+    setCenter(selectedCity);
     let first = moment(new Date($('#arrive').val()));
     let last = moment(new Date($('#depart').val()));
     let offset = new Date().getTimezoneOffset();
     let firstDay = moment(first).add(offset, 'minutes');
     let lastDay = moment(last).add(offset, 'minutes');
     createItinerary(firstDay, lastDay);
+    $('#splash').fadeOut(600, function(){
+      $('#exploration').fadeIn(600);
+    });
   });
+}
+
+function setCenter(cityAbbrv){
+  for(let i = 0; i <cityCenters.length; i++){
+    if(cityCenters[i].city === cityAbbrv){
+      let Lat = cityCenters[i].center.lat;
+      let Lng = cityCenters[i].center.lng;
+      console.log(`setting center to ${cityAbbrv}`);
+      map.setCenter(cityCenters[i].center);
+    }
+  }
 }
 
 function daysCalc(date1, date2){
@@ -79,13 +94,11 @@ function cityDay(date, placesArray){
   this.places = placesArray
 }
 
+//Need date to be a title and add a second div as the dragula target.
 function updateSchedule(){
   for(let i = 0; i<itinerary.length; i++){
-    $('#dates-ul').append(`<div id="day${i}" class="dayDiv"><span class="day">${moment(itinerary[i].date).format("dddd, MMMM Do YYYY")}</span>
-    <ul id="date${i}">
-      <li>Place 1</li>
-      <li>Place 2</li>
-    </ul></div>`);
+    $('#itinerary').append(`<div id="day${i}" class="dayDiv"><span class="day">${moment(itinerary[i].date).format
+      ("ddd,ll")}:</span></div>`);
   }
 }
 
@@ -119,10 +132,10 @@ function placeSelection(){
   });
 }
 }
-
 function Place (name, address, placeID, phone, website, reviews, rating, price){
   this.name = name;
-  this.address = address;
+  this.address = address.slice(0, address.length - 10);
+  this.address - address;
   this.placeID = placeID;
   this.phone = phone;
   this.website = website;
@@ -135,16 +148,72 @@ function updatePlaces(){
   // let list = '';
   let i = myPlaces.length - 1;
       $('#places').append( `
-        <div id="${myPlaces[i].placeID}" class="places-detail">
+        <div id="${myPlaces[i].placeID}" class="place-card" draggable="true">
           <ul class="place-info:">
-            <li>${myPlaces[i].name}</li>
+            <li><span id="place-name" >${myPlaces[i].name}</span></li>
             <li>${myPlaces[i].address}</li>
             <li>${myPlaces[i].phone}</li>
             <li><a href="${myPlaces[i].website}" target="_blank">${myPlaces[i].website}</a></li>
           </ul>
         </div>`);
+        addDnD(myPlaces[i].placeID);
 }
 
+
+// function addDnD(placeID){
+//   $(`#${placeID}`).draggable({
+//     revert: true,
+//     helper: function() {
+//         var container = $('<div/>');
+//         var dragged = $(this);
+//         container.append(dragged.clone());
+//         return container;
+//     }
+//   });
+
+// Drop
+//   $('.dayDiv').droppable({
+//     tolerance: 'pointer',
+//       drop: function(event, ui) {
+//         $(this).append($(ui.helper.children()));
+//       },
+//       out: function(event, ui) {
+//         $(ui.draggable).fadeOut(600, function(){
+//           this.remove();
+//         });
+//       }
+//   });
+// }
+
+function addDnD(placeID){
+  console.log("addDnD ran");
+  $(`#${placeID}`).draggable({
+    cursor: 'move',
+    revert: 'invalid',
+    helper: 'clone'
+  });
+
+  $('.dayDiv').droppable({
+    accept: `#${placeID}`,
+    hoverClass: 'ui-state-active',
+    drop: function(event, ui) {
+      if ($(ui.draggable).hasClass('new')) {
+        $('.new').draggable({
+            revert: true
+        });
+    } else {
+        $(this).append($(ui.draggable).clone().draggable({
+            helper: "original"
+        }).addClass('new'));
+    }
+  },
+    out: function (event, ui) {
+      $(ui.draggable).fadeOut(1000, function() {
+        $(this).remove();
+      });
+    }
+  });  
+}
 
 function setCoords(index){
   $.ajax({
