@@ -3,7 +3,7 @@ mySpace = function(){
 const mapsAPIKey = 'AIzaSyBFyC3jDrzJK-9cl0wuWZonC-JpwP5Gaho';
 const cityCenters = [
         { city: "NY",
-          center: {lat: 40.7829, lng: -73.9654}
+          center: {lat: 40.7549, lng: -73.9840}
         },
         { city: "PHL",
           center: {lat: 39.9526, lng: -75.1652}
@@ -144,6 +144,21 @@ function Place (name, address, placeID, phone, website, reviews, rating, price){
   this.price = price;
 }
 
+// function updatePlaces(){
+//   // let list = '';
+//   let i = myPlaces.length - 1;
+//       $('#places').append( `
+//         <div id="${myPlaces[i].placeID}" class="place-card" draggable="true">
+//           <ul class="place-info:">
+//             <li><span id="place-name" >${myPlaces[i].name}</span></li>
+//             <li>${myPlaces[i].address}</li>
+//             <li>${myPlaces[i].phone}</li>
+//             <li><a href="${myPlaces[i].website}" target="_blank">${myPlaces[i].website}</a></li>
+//           </ul>
+//         </div>`);
+//         addDnD(myPlaces[i].placeID);
+// }
+
 function updatePlaces(){
   // let list = '';
   let i = myPlaces.length - 1;
@@ -152,8 +167,6 @@ function updatePlaces(){
           <ul class="place-info:">
             <li><span id="place-name" >${myPlaces[i].name}</span></li>
             <li>${myPlaces[i].address}</li>
-            <li>${myPlaces[i].phone}</li>
-            <li><a href="${myPlaces[i].website}" target="_blank">${myPlaces[i].website}</a></li>
           </ul>
         </div>`);
         addDnD(myPlaces[i].placeID);
@@ -224,12 +237,17 @@ function setCoords(index){
       key: `${mapsAPIKey}`
     },
     success: function(data) {
+      console.log(`inside setCoords: ${data}`);
       let foundLat = data.results[0].geometry.location.lat;
       let foundLng = data.results[0].geometry.location.lng;
       myPlaces[index].lat = foundLat;
       myPlaces[index].lng = foundLng;
+      console.log(`${foundLat}, ${foundLng}`);
       addMarker(index);
-    } 
+    }, 
+    error: function(error){
+      console.log(`error is ${error}`);
+    }
     //add error
   });
 }

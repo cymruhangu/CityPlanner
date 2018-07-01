@@ -35,7 +35,7 @@ body, main {
 }
 #map {
 	width: 60%;
-	height: 600px;
+	height: 900px;
 	overflow: auto;
 	/* margin: 0 auto; */
 }
@@ -60,7 +60,10 @@ li {
 
 #places {
 	background-color: aliceblue;
-	width: 85%;
+	width: 20%;
+	position: absolute;
+	top: 0;
+	right: 20%;
 	display: flex;
 	flex-wrap: wrap;
 	align-items: flex-start;
@@ -69,19 +72,22 @@ li {
 .place-card {
 	border: 1px solid black;
 	border-radius: 20px;
-	width: 300px;
+	width: 200px;
 	background-color: #b1c4e2;
 	display: block;
+	font-size: .75em;
 }
 .place-card ul, .place-card {
 	margin-left: 0;
 	padding: 0;
+	margin-bottom: 0;
+	
 }
 
 #itinerary {
-	background-color: aquamarine;
-	width: 40%;
-	height: 600px;
+	background-color: #5ec9ed;
+	width: 20%;
+	height: 900px;
 	position: absolute;
 	top: 0;
 	right: 0;
@@ -91,10 +97,10 @@ li {
 	display: block;
 	position: relative;
 	overflow: hidden;
-	height: 120px;
-	width: 140px;
+	height: 180px;
+	width: 100%;
 	border: 1px solid black;
-	font-size: .6em;
+	font-size: 1em;
 	text-align: center;
 }
 .day {
