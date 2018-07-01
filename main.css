@@ -101,7 +101,6 @@ li {
 	width: 100%;
 	border: 1px solid black;
 	font-size: 1em;
-	text-align: center;
 }
 .day {
 	font-weight: bold;
@@ -116,4 +115,25 @@ li {
 
 #place-name {
 	font-weight: bold;
+}
+
+.dayDiv h5 {
+	text-align: left;
+}
+
+.btn-container {
+	text-align: center;
+	padding: 3px 0px;
+}
+
+.place-card button {
+	border-radius: 10px;
+}
+.delete {
+	color: white;
+	background-color: #ef454e;
+}
+
+.schedule {
+	background-color: aquamarine;
 }

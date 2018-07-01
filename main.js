@@ -97,10 +97,26 @@ function cityDay(date, placesArray){
 //Need date to be a title and add a second div as the dragula target.
 function updateSchedule(){
   for(let i = 0; i<itinerary.length; i++){
-    $('#itinerary').append(`<div id="day${i}" class="dayDiv"><span class="day">${moment(itinerary[i].date).format
-      ("ddd,ll")}:</span></div>`);
+    let dateCard = `
+      <div id="day${i}" class="dayDiv">
+        <span class="day">${moment(itinerary[i].date).format("ddd,ll")}:</span>
+        <h6>AM:</h6>
+        <ul class="am"></ul>
+        <h6>PM:</h6>
+        <ul class="pm"></ul>
+        <h6>Night:</h6>
+        <ul class="night"></ul>
+      </div>`;
+    $('#itinerary').append(dateCard);
   }
 }
+
+// function updateSchedule(){
+//   for(let i = 0; i<itinerary.length; i++){
+//     $('#itinerary').append(`<div id="day${i}" class="dayDiv"><span class="day">${moment(itinerary[i].date).format
+//       ("ddd,ll")}:</span></div>`);
+//   }
+// }
 
 placeSelection();
 
@@ -134,8 +150,7 @@ function placeSelection(){
 }
 function Place (name, address, placeID, phone, website, reviews, rating, price){
   this.name = name;
-  this.address = address.slice(0, address.length - 10);
-  this.address - address;
+  this.address = address;
   this.placeID = placeID;
   this.phone = phone;
   this.website = website;
@@ -144,88 +159,32 @@ function Place (name, address, placeID, phone, website, reviews, rating, price){
   this.price = price;
 }
 
-// function updatePlaces(){
-//   // let list = '';
-//   let i = myPlaces.length - 1;
-//       $('#places').append( `
-//         <div id="${myPlaces[i].placeID}" class="place-card" draggable="true">
-//           <ul class="place-info:">
-//             <li><span id="place-name" >${myPlaces[i].name}</span></li>
-//             <li>${myPlaces[i].address}</li>
-//             <li>${myPlaces[i].phone}</li>
-//             <li><a href="${myPlaces[i].website}" target="_blank">${myPlaces[i].website}</a></li>
-//           </ul>
-//         </div>`);
-//         addDnD(myPlaces[i].placeID);
-// }
-
 function updatePlaces(){
   // let list = '';
   let i = myPlaces.length - 1;
       $('#places').append( `
         <div id="${myPlaces[i].placeID}" class="place-card" draggable="true">
           <ul class="place-info:">
-            <li><span id="place-name" >${myPlaces[i].name}</span></li>
+            <li><span id="place-name" >${i + 1}. ${myPlaces[i].name}</span></li>
             <li>${myPlaces[i].address}</li>
           </ul>
+          <div class="btn-container">
+            <button type="button" id="delete-${i}" class="delete">delete<button type="button" class="schedule">schedule</button>
+          </div>
         </div>`);
-        addDnD(myPlaces[i].placeID);
+        addPlaceListeners(i);
 }
 
-
-// function addDnD(placeID){
-//   $(`#${placeID}`).draggable({
-//     revert: true,
-//     helper: function() {
-//         var container = $('<div/>');
-//         var dragged = $(this);
-//         container.append(dragged.clone());
-//         return container;
-//     }
-//   });
-
-// Drop
-//   $('.dayDiv').droppable({
-//     tolerance: 'pointer',
-//       drop: function(event, ui) {
-//         $(this).append($(ui.helper.children()));
-//       },
-//       out: function(event, ui) {
-//         $(ui.draggable).fadeOut(600, function(){
-//           this.remove();
-//         });
-//       }
-//   });
-// }
-
-function addDnD(placeID){
-  console.log("addDnD ran");
-  $(`#${placeID}`).draggable({
-    cursor: 'move',
-    revert: 'invalid',
-    helper: 'clone'
+function addPlaceListeners(index) {
+  $('.delete-`${index}`').click(function(e){
+    e.preventDefault();
+    console.log(`delete ${myPlaces[index].name} `);
   });
 
-  $('.dayDiv').droppable({
-    accept: `#${placeID}`,
-    hoverClass: 'ui-state-active',
-    drop: function(event, ui) {
-      if ($(ui.draggable).hasClass('new')) {
-        $('.new').draggable({
-            revert: true
-        });
-    } else {
-        $(this).append($(ui.draggable).clone().draggable({
-            helper: "original"
-        }).addClass('new'));
-    }
-  },
-    out: function (event, ui) {
-      $(ui.draggable).fadeOut(1000, function() {
-        $(this).remove();
-      });
-    }
-  });  
+  $('.schedule').click(function(e){
+    e.preventDefault();
+    console.log("schedule button clicked");
+  });
 }
 
 function setCoords(index){
@@ -233,7 +192,7 @@ function setCoords(index){
     url: "https://maps.googleapis.com/maps/api/geocode/json",
     type: "GET",
     data: {
-      address: myPlaces[index].name,
+      address: myPlaces[index].address,
       key: `${mapsAPIKey}`
     },
     success: function(data) {
@@ -258,6 +217,7 @@ function addMarker(index){
   let coordsObj = {lat:x,lng:y};
   let marker = new google.maps.Marker({
     position: coordsObj,
+    label: `${index + 1}`,
     map:map
   });
   
