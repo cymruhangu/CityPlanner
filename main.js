@@ -24,6 +24,7 @@ const cityCenters = [
 let map = null;
 let marker = null;
 let myPlaces = [];
+let markers = [];
 let placeIndex = -1;
 let cityCenter = {lat: 40.7829, lng: -73.9654};
 let itinerary =[];
@@ -159,33 +160,49 @@ function Place (name, address, placeID, phone, website, reviews, rating, price){
   this.price = price;
 }
 
+//new updatePlaces
 function updatePlaces(){
-  // let list = '';
-  let i = myPlaces.length - 1;
-      $('#places').append( `
-        <div id="${myPlaces[i].placeID}" class="place-card" draggable="true">
+  $('#places').html('');
+  for(let i = 0; i<myPlaces.length; i++){
+    $('#places').append( `
+        <div id="${myPlaces[i].placeID}" class="place-card">
           <ul class="place-info:">
             <li><span id="place-name" >${i + 1}. ${myPlaces[i].name}</span></li>
             <li>${myPlaces[i].address}</li>
           </ul>
           <div class="btn-container">
-            <button type="button" id="delete-${i}" class="delete">delete<button type="button" class="schedule">schedule</button>
+            <button type="button" id="delete-${i}" class="delete">delete<button type="button" id="schedule-${i}" class="schedule">schedule</button>
           </div>
         </div>`);
         addPlaceListeners(i);
+  }
 }
 
 function addPlaceListeners(index) {
-  $('.delete-`${index}`').click(function(e){
+  $(`#delete-${index}`).click(function(e){
     e.preventDefault();
-    console.log(`delete ${myPlaces[index].name} `);
+    //remove marker
+    removeMarker(index);
+    let removed = myPlaces.splice(`${index}`, 1);
+    updatePlaces();
   });
 
-  $('.schedule').click(function(e){
+  $(`#schedule-${index}`).click(function(e){
     e.preventDefault();
-    console.log("schedule button clicked");
+    console.log(`schedule ${myPlaces[index].name} `);
   });
 }
+function removeMarker(index){
+  console.log(`myPlaces[i].name is ${myPlaces[index].name}`);
+  let marker = myPlaces[index].name;
+  markers[index].setMap(null);
+}
+// function setMapOnAll(map, index){
+//   // for (let i = 0; i < markers.length; i++) {
+//     console.log(`deleting ${myPlaces[index].name}`);
+//     markers[index].setMap(map);
+//   // }
+// }
 
 function setCoords(index){
   $.ajax({
@@ -201,7 +218,7 @@ function setCoords(index){
       let foundLng = data.results[0].geometry.location.lng;
       myPlaces[index].lat = foundLat;
       myPlaces[index].lng = foundLng;
-      console.log(`${foundLat}, ${foundLng}`);
+      myPlaces[index].LatLng = {lat:foundLat,lng:foundLng};
       addMarker(index);
     }, 
     error: function(error){
@@ -212,14 +229,14 @@ function setCoords(index){
 }
 
 function addMarker(index){
-  let x = myPlaces[index].lat;
-  let y = myPlaces[index].lng;
-  let coordsObj = {lat:x,lng:y};
   let marker = new google.maps.Marker({
-    position: coordsObj,
+    position: myPlaces[index].LatLng,
     label: `${index + 1}`,
-    map:map
+    map:map,
+    id: `${index + 1}`
   });
+
+  markers.push(marker);
   
   let contentStr = `${myPlaces[index].name}
                     <br>
