@@ -78,9 +78,10 @@ function daysCalc(date1, date2){
 }
 
 function createItinerary(firstDay, lastDay){
-  let numDays = daysCalc(firstDay, lastDay);
+  // let numDays = daysCalc(firstDay, lastDay);
+  let numDays = 5;
    //create object with date and array of places
-  for(let i = 0; i<numDays+1; i++){
+  for(let i = 0; i<numDays; i++){
     let newDate = moment(firstDay).add(i, 'days');
     let placesArray = [];
     let newDay = new cityDay(newDate, placesArray);
