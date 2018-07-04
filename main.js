@@ -44,6 +44,7 @@ function initMap() {
     gestureHandling: 'cooperative'
   });  
 
+
 function getCity(){
   $('#trip-form').submit(function(e){
     e.preventDefault();
@@ -51,11 +52,9 @@ function getCity(){
     console.log(`city is: ${selectedCity}`);
     setCenter(selectedCity);
     let first = moment(new Date($('#arrive').val()));
-    let last = moment(new Date($('#depart').val()));
     let offset = new Date().getTimezoneOffset();
     let firstDay = moment(first).add(offset, 'minutes');
-    let lastDay = moment(last).add(offset, 'minutes');
-    createItinerary(firstDay, lastDay);
+    createItinerary(firstDay);
     $('#splash').fadeOut(600, function(){
       $('#exploration').fadeIn(600);
     });
@@ -77,48 +76,57 @@ function daysCalc(date1, date2){
   return parseInt((date2 - date1) / (24 * 3600 * 1000));
 }
 
-function createItinerary(firstDay, lastDay){
-  // let numDays = daysCalc(firstDay, lastDay);
+function createItinerary(firstDay){
   let numDays = 5;
    //create object with date and array of places
   for(let i = 0; i<numDays; i++){
     let newDate = moment(firstDay).add(i, 'days');
-    let placesArray = [];
-    let newDay = new cityDay(newDate, placesArray);
+    let placesObj = {
+                        am: [],
+                        pm: [],
+                        eve: []
+    };
+    let newDay = new cityDay(newDate, placesObj);
     itinerary.push(newDay);
   }
   console.log(itinerary);
   updateSchedule();
 }
 
-function cityDay(date, placesArray){
+function cityDay(date, placesObj){
   this.date = date;
-  this.places = placesArray
+  this.places = placesObj
 }
 
-//Need date to be a title and add a second div as the dragula target.
 function updateSchedule(){
   for(let i = 0; i<itinerary.length; i++){
     let dateCard = `
       <div id="day${i}" class="dayDiv">
-        <span class="day">${moment(itinerary[i].date).format("ddd,ll")}:</span>
-        <h6>AM:</h6>
-        <ul class="am"></ul>
-        <h6>PM:</h6>
-        <ul class="pm"></ul>
-        <h6>Night:</h6>
-        <ul class="night"></ul>
+        <span class="day">${moment(itinerary[i].date).format("ddd,ll")}:</span>`;
+    //forEach through events
+    dateCard+=`
+        <p class="period">AM:</p>
+        <ul class="am">`;
+    itinerary[i].places.am.forEach(function(e){
+      dateCard+=`<li>${e}</li>`;
+    });
+    dateCard+=`</ul> 
+        <p class="period">PM:</p>
+        <ul class="pm">`;
+    itinerary[i].places.pm.forEach(function(e){
+      dateCard+=`<li>${e}</li>`;
+    });
+    dateCard+=`</ul>
+        <p class="period">Night:</p>
+        <ul class="night">`;
+    itinerary[i].places.eve.forEach(function(e){
+      dateCard+=`<li>${e}</li>`;
+    });
+    dateCard+= `</ul>
       </div>`;
     $('#itinerary').append(dateCard);
   }
 }
-
-// function updateSchedule(){
-//   for(let i = 0; i<itinerary.length; i++){
-//     $('#itinerary').append(`<div id="day${i}" class="dayDiv"><span class="day">${moment(itinerary[i].date).format
-//       ("ddd,ll")}:</span></div>`);
-//   }
-// }
 
 placeSelection();
 
@@ -150,6 +158,7 @@ function placeSelection(){
   });
 }
 }
+
 function Place (name, address, placeID, phone, website, reviews, rating, price){
   this.name = name;
   this.address = address;
@@ -173,7 +182,25 @@ function updatePlaces(){
           </ul>
           <div class="btn-container">
             <button type="button" id="delete-${i}" class="delete">delete<button type="button" id="schedule-${i}" class="schedule">schedule</button>
+            <button type="button" id="unsched=${i}" class="unsched" hidden>unschedule</button>
           </div>
+          <form id="sched-form-${i}">
+            <select id="day-time" size=1 required>
+              <option value="" disabled selected>choose day</option>
+              <option value="0">${moment(itinerary[0].date).format("ddd,ll")}</option>
+              <option value="1">${moment(itinerary[1].date).format("ddd,ll")}</option>
+              <option value="2">${moment(itinerary[2].date).format("ddd,ll")}</option>
+              <option value="3">${moment(itinerary[3].date).format("ddd,ll")}</option>
+              <option value="4">${moment(itinerary[4].date).format("ddd,ll")}</option>
+            </select>
+            <select id="period" size=1 required>
+              <option value="" disabled selected>time of day</option>
+              <option value="am">morning</option>
+              <option value="pm">afternoon</option>
+              <option value="eve">evening</option>
+            </select>
+            <input id="sched-btn-${i}" type="submit" value="submit">
+          </form>
         </div>`);
         addPlaceListeners(i);
   }
@@ -186,13 +213,36 @@ function addPlaceListeners(index) {
     removeMarker(index);
     let removed = myPlaces.splice(`${index}`, 1);
     updatePlaces();
+    placeIndex--;
   });
 
   $(`#schedule-${index}`).click(function(e){
     e.preventDefault();
-    console.log(`schedule ${myPlaces[index].name} `);
+    
+    $(`#schedule-${index}`).fadeOut(400, function(){
+      $(`#delete-${index}`).fadeOut(400, function(){
+        $(`#sched-form-${index}`).fadeIn(400, function(){
+          addSchedListener(index);
+        });
+      });
+    });
   });
 }
+
+function addSchedListener(index){
+  $(`#sched-form-${index}`).submit(function(e){
+    e.preventDefault();
+    let date = $('select#day-time').find('option:selected').val();
+    let period = $('select#period').find('option:selected').val();
+    
+    //set schedule
+    let thisPlace = myPlaces[index].name;
+    itinerary[1].places.eve.push(thisPlace);
+    console.log(`did this  ${itinerary[1].places.eve}`);
+    updateSchedule();
+  });
+}
+
 function removeMarker(index){
   console.log(`myPlaces[i].name is ${myPlaces[index].name}`);
   let marker = myPlaces[index].name;

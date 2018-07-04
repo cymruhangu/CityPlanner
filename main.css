@@ -17,7 +17,6 @@ body, main {
 	background-position: center;
 	background-repeat: no-repeat;
 	background-size: cover; 
-	
 }
 
 #splash h1 {
@@ -87,20 +86,43 @@ li {
 #itinerary {
 	background-color: #5ec9ed;
 	width: 20%;
-	height: 900px;
+	/* height: 1000px; */
 	position: absolute;
 	top: 0;
 	right: 0;
+	margin-bottom: 50px;
 }
 
+#places form {
+	display: none;
+}
+
+p.period {
+	font-size: 0.75em;
+	font-style: italic;
+	font-weight: bold;
+	margin-bottom: 0;
+	padding-bottom: 0;
+	padding-top: 0;
+}
+
+.dayDiv ul {
+	margin: 0;
+	padding: 0;
+}
+.dayDiv li {
+	margin-left: 25px;
+	padding: 0;
+	font-size: 1em;
+}
 .dayDiv{
 	display: block;
 	position: relative;
 	overflow: hidden;
-	height: 180px;
+	/* height: 200px; */
 	width: 100%;
 	border: 1px solid black;
-	font-size: 1em;
+	font-size: 0.9em;
 }
 .day {
 	font-weight: bold;

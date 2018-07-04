@@ -17,7 +17,8 @@
         <span id="intro3"><h4>Select a City and Arrival Date:</h4></span>
         <form id="trip-form">
           <label>Destination City:
-            <select id="city" size="1">
+            <select id="city" size="1" required>
+              <option value="" disabled selected>Select your city</option>
               <option value="NY">New York</option>
               <option value="PHL">Philadelphia</option>
               <option value="BSTN">Boston</option>
@@ -27,7 +28,7 @@
             </select>
           </label>
           <label for="arrive">Arrival:
-            <input type="date" id="arrive">
+            <input type="date" id="arrive" required>
           </label>
             <button type="submit">Submit</button>
         </form>
