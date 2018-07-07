@@ -29,12 +29,6 @@ let placeIndex = -1;
 let cityCenter = {lat: 40.7829, lng: -73.9654};
 let itinerary =[];
 
-/* 
-  - map is hidden at start
-  - default city is NY
-  - get selected City and dates from form
-  - Call initMap again with the new city and unhide
-*/
 
 function initMap() {
   getCity();
@@ -157,7 +151,7 @@ function placeSelection(){
     document.getElementById('pac-input').value = '';
   });
 }
-}
+// }// end of initMap()
 
 function Place (name, address, placeID, phone, website, reviews, rating, price){
   this.name = name;
@@ -237,8 +231,8 @@ function addSchedListener(index){
     
     //set schedule
     let thisPlace = myPlaces[index].name;
-    itinerary[1].places.eve.push(thisPlace);
-    console.log(`did this  ${itinerary[1].places.eve}`);
+    itinerary[1].places.pm.push(thisPlace);
+    console.log(`did this  ${itinerary[1].places.pm}`);
     updateSchedule();
   });
 }
@@ -248,12 +242,7 @@ function removeMarker(index){
   let marker = myPlaces[index].name;
   markers[index].setMap(null);
 }
-// function setMapOnAll(map, index){
-//   // for (let i = 0; i < markers.length; i++) {
-//     console.log(`deleting ${myPlaces[index].name}`);
-//     markers[index].setMap(map);
-//   // }
-// }
+
 
 function setCoords(index){
   $.ajax({
@@ -301,7 +290,7 @@ function addMarker(index){
     infoWindow.open(map, marker);
   });
 }
-
+}//new end of initMap
 //==========================
 return {initMap:initMap}
 }();
