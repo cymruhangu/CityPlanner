@@ -28,7 +28,9 @@ let markers = [];
 let placeIndex = -1;
 let cityCenter = {lat: 40.7829, lng: -73.9654};
 let itinerary =[];
-
+//ensure that today is the min date
+let today = new Date().toISOString().split('T')[0];
+$('#arrive').attr('min', today);
 
 function initMap() {
   getCity();
@@ -83,7 +85,6 @@ function createItinerary(firstDay){
     let newDay = new cityDay(newDate, placesObj);
     itinerary.push(newDay);
   }
-  console.log(itinerary);
   updateSchedule();
 }
 
@@ -93,6 +94,7 @@ function cityDay(date, placesObj){
 }
 
 function updateSchedule(){
+  $('#itinerary').html('');
   for(let i = 0; i<itinerary.length; i++){
     let dateCard = `
       <div id="day${i}" class="dayDiv">
@@ -162,11 +164,13 @@ function Place (name, address, placeID, phone, website, reviews, rating, price){
   this.reviews = reviews;
   this.rating = rating;
   this.price = price;
+  this.scheduled = false;
+  this.schedDay = [];
 }
 
 //new updatePlaces
 function updatePlaces(){
-  $('#places').html('');
+  $('#places').html('').css('display', 'none');
   for(let i = 0; i<myPlaces.length; i++){
     $('#places').append( `
         <div id="${myPlaces[i].placeID}" class="place-card">
@@ -176,7 +180,7 @@ function updatePlaces(){
           </ul>
           <div class="btn-container">
             <button type="button" id="delete-${i}" class="delete">delete<button type="button" id="schedule-${i}" class="schedule">schedule</button>
-            <button type="button" id="unsched=${i}" class="unsched" hidden>unschedule</button>
+            <button type="button" id="unsched-${i}" class="unsched">unschedule</button>
           </div>
           <form id="sched-form-${i}">
             <select id="day-time" size=1 required>
@@ -196,9 +200,24 @@ function updatePlaces(){
             <input id="sched-btn-${i}" type="submit" value="submit">
           </form>
         </div>`);
+        setButtonStatus(i);
         addPlaceListeners(i);
   }
+  $('#places').fadeIn(600);
 }
+
+function setButtonStatus(index){
+    if(myPlaces[index].scheduled){
+      $(`#schedule-${index}`).css('display', 'none');
+      $(`#delete-${index}`).css('display', 'none');
+      $(`#unsched-${index}`).css('display', 'inline-block');
+    } else {
+      $(`#schedule-${index}`).css('display', 'inline-block');
+      $(`#delete-${index}`).css('display', 'inline-block');
+      $(`#unsched-${index}`).css('display', 'none');
+    }
+}
+//---------
 
 function addPlaceListeners(index) {
   $(`#delete-${index}`).click(function(e){
@@ -212,7 +231,6 @@ function addPlaceListeners(index) {
 
   $(`#schedule-${index}`).click(function(e){
     e.preventDefault();
-    
     $(`#schedule-${index}`).fadeOut(400, function(){
       $(`#delete-${index}`).fadeOut(400, function(){
         $(`#sched-form-${index}`).fadeIn(400, function(){
@@ -226,15 +244,27 @@ function addPlaceListeners(index) {
 function addSchedListener(index){
   $(`#sched-form-${index}`).submit(function(e){
     e.preventDefault();
-    let date = $('select#day-time').find('option:selected').val();
-    let period = $('select#period').find('option:selected').val();
+    let date = $(`#sched-form-${index} select#day-time`).find('option:selected').val();
+    let period = $(`#sched-form-${index} select#period`).find('option:selected').val();
+    console.log(`period is ${period}`);
     
     //set schedule
     let thisPlace = myPlaces[index].name;
-    itinerary[1].places.pm.push(thisPlace);
-    console.log(`did this  ${itinerary[1].places.pm}`);
+    myPlaces[index].scheduled = true;
+    myPlaces[index].schedDay.push(index);
+    addUnschedListener(index);
+    itinerary[date].places[period].push(thisPlace);
+    console.log(`putting ${thisPlace} into ${itinerary[date].places} on ${date} in ${period}`);
+    console.log(itinerary);
     updateSchedule();
   });
+}
+
+function addUnschedListener(index){
+  //remove place from schedule
+  //How do I know where it is scheduled?
+  //updateSchedule();
+  //hide unsched button and reveal delete and sched buttons
 }
 
 function removeMarker(index){
@@ -242,7 +272,6 @@ function removeMarker(index){
   let marker = myPlaces[index].name;
   markers[index].setMap(null);
 }
-
 
 function setCoords(index){
   $.ajax({
@@ -253,7 +282,6 @@ function setCoords(index){
       key: `${mapsAPIKey}`
     },
     success: function(data) {
-      console.log(`inside setCoords: ${data}`);
       let foundLat = data.results[0].geometry.location.lat;
       let foundLng = data.results[0].geometry.location.lng;
       myPlaces[index].lat = foundLat;
