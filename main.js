@@ -165,7 +165,7 @@ function Place (name, address, placeID, phone, website, reviews, rating, price){
   this.rating = rating;
   this.price = price;
   this.scheduled = false;
-  this.schedDay = [];
+  this.schedDay = ["","","","",""];
 }
 
 //new updatePlaces
@@ -251,20 +251,61 @@ function addSchedListener(index){
     //set schedule
     let thisPlace = myPlaces[index].name;
     myPlaces[index].scheduled = true;
-    myPlaces[index].schedDay.push(index);
+    myPlaces[index].schedDay[date] = period;
     addUnschedListener(index);
-    itinerary[date].places[period].push(thisPlace);
-    console.log(`putting ${thisPlace} into ${itinerary[date].places} on ${date} in ${period}`);
+    console.log(`before: ${itinerary[date].places[period]}`);
+    // let y = itinerary[date].places[period].includes(thisPlace);
+    if(!itinerary[date].places[period].includes(thisPlace)){
+      itinerary[date].places[period].push(thisPlace);
+    };
+    console.log(`after: ${itinerary[date].places[period]}`);
+    console.log('from sched:');
+    console.log(myPlaces);
     console.log(itinerary);
+    $(`#sched-form-${index}`).fadeOut(300, function(){
+      $(`#unsched-${index}`).fadeIn(300);
+    });
     updateSchedule();
   });
 }
 
 function addUnschedListener(index){
-  //remove place from schedule
-  //How do I know where it is scheduled?
-  //updateSchedule();
-  //hide unsched button and reveal delete and sched buttons
+  $(`#unsched-${index}`).click(function(e){
+    myPlaces[index].scheduled = false;
+
+    //find which day/time scheduled
+    let dayTime = findDayTime(index);
+    let day = dayTime[0];
+    let time = dayTime[1];
+
+    let name = myPlaces[index].name;
+
+    //remove place from itinerary[day].places[time]
+    let x = itinerary[day].places[time].indexOf(name);
+    //place empty string in myPlaces[index].schedDay
+    itinerary[day].places[time].splice(x, 1);
+    console.log(`from unsched: x is ${x}`);
+    console.log(myPlaces);
+    console.log(itinerary);
+    //hide unsched, reveal delete and sched
+    $(`#unsched-${index}`).fadeOut(200, function(){
+      $(`#delete-${index}, #schedule-${index}`).fadeIn(300);
+    });
+    updateSchedule();
+  });
+}
+
+function findDayTime(index) {
+  let day = null;
+  let time ="";
+  for(let i=0; i<myPlaces[index].schedDay.length; i++){
+    if(myPlaces[index].schedDay[i]){
+      day = i;
+      time = myPlaces[index].schedDay[i];
+      myPlaces[index].schedDay[i] = '';
+    }
+  };
+  return [day, time];
 }
 
 function removeMarker(index){
