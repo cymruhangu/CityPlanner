@@ -19,6 +19,18 @@ body, main {
 	background-size: cover; 
 }
 
+#splash-2 {
+	display: none;
+	position: relative;
+	width: 100%;
+	height:100%;
+	background-image: url("https://images.unsplash.com/photo-1521330376889-\
+	088f238e793b?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=3df50c816fef0dfc510cc0468038a8f8&auto=format&fit=crop&w=1950&q=80");
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover; 
+}
+
 #splash h1 {
 	font-size: 5em;
 }
@@ -50,6 +62,7 @@ li {
 	margin-left: 15px;
 }
 
+
 #pac-input.controls {
 	margin-top: 20px;
 	width: 250px;
@@ -70,12 +83,22 @@ li {
 }
 .place-card {
 	border: 1px solid black;
-	border-radius: 20px;
-	width: 200px;
-	background-color: #b1c4e2;
+	width: 100%;
 	display: block;
 	font-size: .75em;
 }
+
+.place-card li:nth-child(n+2){
+	text-indent: 2em;
+}
+.place-card:nth-child(odd){
+	background-color:#ffe6cc;
+}
+
+.place-card:nth-child(even){
+	background-color: #e1e1ea;
+}
+
 .place-card ul, .place-card {
 	margin-left: 0;
 	padding: 0;

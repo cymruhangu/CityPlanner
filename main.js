@@ -3,24 +3,46 @@ mySpace = function(){
 const mapsAPIKey = 'AIzaSyBFyC3jDrzJK-9cl0wuWZonC-JpwP5Gaho';
 const cityCenters = [
         { city: "NY",
-          center: {lat: 40.7549, lng: -73.9840}
+          name: "New York",
+          center: {lat: 40.7549, lng: -73.9840},
+          img: "https://images.unsplash.com/photo-1482816928022-63fca0c422c9?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=d7b0250cda500d99737d49ad8e836778&auto=format&fit=crop&w=1950&q=80"
         },
         { city: "PHL",
-          center: {lat: 39.9526, lng: -75.1652}
+          name: "Philadelphia",
+          center: {lat: 39.9526, lng: -75.1652},
+          img: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/Philadelphia_skyline_from_the_southwest_2015.jpg/1024px-Philadelphia_skyline_from_the_southwest_2015.jpg"
         },
         { city: "BSTN",
-          center: {lat: 42.3601, lng: -71.0589}
+          name: "Boston",
+          center: {lat: 42.3601, lng: -71.0589},
+          img: "https://images.unsplash.com/photo-1520461589603-5158b75e6663?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=3a1c8ae9cb4345a4120d70540a5de145&auto=format&fit=crop&w=1952&q=80"
         },
         { city: "DC",
-          center: {lat: 38.9072, lng: -77.0369}
+          name: "Washington, DC",
+          center: {lat: 38.9072, lng: -77.0369},
+          img: "https://images.unsplash.com/photo-1522986949846-f63066ace3de?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=190cb0973909aaaa24cf678bcbb1d3b6&auto=format&fit=crop&w=1950&q=80"
         },
         { city: "CHI",
-          center: {lat: 41.8781, lng: -87.6298}
+          name: "Chicago",
+          center: {lat: 41.8781, lng: -87.6298},
+          img: "https://images.unsplash.com/photo-1422393462206-207b0fbd8d6b?ixlib=rb-0.3.5&s=b06c1fb67e23344ffc685dccbd6e78d8&auto=format&fit=crop&w=1950&q=80"
         },
         { city: "NOLA",
-          center: {lat: 29.9511, lng: -90.0715}
-        }
+          name: "New Orleans",
+          center: {lat: 29.9511, lng: -90.0715},
+          img: "https://images.unsplash.com/photo-1484972759836-b93f9ef2b293?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=7d67b595c38bb2dfe8860ac03ea00d5f&auto=format&fit=crop&w=1950&q=80"
+        },
+        { city: "MTL",
+          name: "Montreal",
+          center: {lat: 45.5017, lng: -73.5673},
+          img: "https://images.unsplash.com/photo-1519178614-68673b201f36?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=d1c6e96be62531ec1249e3e921d0c035&auto=format&fit=crop&w=1568&q=80"
+        },
+        { city: "TO",
+          name: "Toronto",
+          center: {lat: 43.6532 , lng: -79.3832},
+          img: "https://images.unsplash.com/photo-1507992781348-310259076fe0?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=06a49e44e78b412a8a23133bdda14e37&auto=format&fit=crop&w=1950&q=80"}
 ];
+
 let map = null;
 let marker = null;
 let myPlaces = [];
@@ -39,7 +61,6 @@ function initMap() {
     zoom: 12,
     gestureHandling: 'cooperative'
   });  
-
 
 function getCity(){
   $('#trip-form').submit(function(e){
@@ -94,7 +115,7 @@ function cityDay(date, placesObj){
 }
 
 function updateSchedule(){
-  $('#itinerary').html('');
+  $('#itinerary').html('<h2>Itinerary:</h2>');
   for(let i = 0; i<itinerary.length; i++){
     let dateCard = `
       <div id="day${i}" class="dayDiv">
@@ -140,9 +161,9 @@ function placeSelection(){
     if (!place.geometry) {
       return;
     }
-
+    console.log(place);
     let selected = new Place(place.name, place.formatted_address, place.place_id,
-     place.formatted_phone_number, place.website, place.reviews, place.rating, place.price_level);
+     place.formatted_phone_number, place.website, place.reviews, place.rating, place.price_level, place.vicinity);
     //push new place to places array
     myPlaces.push(selected);
     placeIndex++;
@@ -155,15 +176,19 @@ function placeSelection(){
 }
 // }// end of initMap()
 
-function Place (name, address, placeID, phone, website, reviews, rating, price){
+function Place (name, address, placeID, phone, website, reviews, rating, price, vicinity){
   this.name = name;
   this.address = address;
   this.placeID = placeID;
   this.phone = phone;
-  this.website = website;
+  this.url = website;
+  let x = website.indexOf('//');
+  let y = website.slice(x+2);
+  this.web = y.substr(0, y.length -1);
   this.reviews = reviews;
   this.rating = rating;
   this.price = price;
+  this.vicinity = vicinity;
   this.scheduled = false;
   this.schedDay = ["","","","",""];
 }
@@ -175,8 +200,10 @@ function updatePlaces(){
     $('#places').append( `
         <div id="${myPlaces[i].placeID}" class="place-card">
           <ul class="place-info:">
-            <li><span id="place-name" >${i + 1}. ${myPlaces[i].name}</span></li>
-            <li>${myPlaces[i].address}</li>
+            <li><span id="place-name">${i + 1}.&nbsp ${myPlaces[i].name}</span></li>
+            <li>${myPlaces[i].vicinity}</li>
+            <li>${myPlaces[i].phone}</li>
+            <li><a href="${myPlaces[i].url}" target="_blank">${myPlaces[i].web}</a></li>
           </ul>
           <div class="btn-container">
             <button type="button" id="delete-${i}" class="delete">delete<button type="button" id="schedule-${i}" class="schedule">schedule</button>
@@ -253,15 +280,13 @@ function addSchedListener(index){
     myPlaces[index].scheduled = true;
     myPlaces[index].schedDay[date] = period;
     addUnschedListener(index);
-    console.log(`before: ${itinerary[date].places[period]}`);
-    // let y = itinerary[date].places[period].includes(thisPlace);
+    // This is a hack to get around putting the place in twice when
+    //scheduling after an unschedule runs. 
     if(!itinerary[date].places[period].includes(thisPlace)){
       itinerary[date].places[period].push(thisPlace);
     };
-    console.log(`after: ${itinerary[date].places[period]}`);
-    console.log('from sched:');
-    console.log(myPlaces);
-    console.log(itinerary);
+    // console.log(myPlaces);
+    // console.log(itinerary);
     $(`#sched-form-${index}`).fadeOut(300, function(){
       $(`#unsched-${index}`).fadeIn(300);
     });
