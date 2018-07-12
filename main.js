@@ -44,10 +44,11 @@ const cityCenters = [
 ];
 
 let map = null;
+let map2 = null;
 let marker = null;
 let myPlaces = [];
 let markers = [];
-let placeIndex = -1;
+let placeIndex = -1;  //Hack
 let cityCenter = {lat: 40.7829, lng: -73.9654};
 let itinerary =[];
 //ensure that today is the min date
@@ -60,7 +61,15 @@ function initMap() {
     center: cityCenter,
     zoom: 12,
     gestureHandling: 'cooperative'
+  });
+
+  map2 = new google.maps.Map(document.getElementById('map2'), {
+    center: placeCoords,
+    zoom: 16,
+    gestureHandling: 'cooperative'
   });  
+
+
 
 function getCity(){
   $('#trip-form').submit(function(e){
@@ -180,11 +189,14 @@ function Place (name, address, placeID, phone, website, reviews, rating, price, 
   this.name = name;
   this.address = address;
   this.placeID = placeID;
+  console.log(`name =${this.name} placeID = ${this.placeID}`);
   this.phone = phone;
   this.url = website;
+  if(this.url){
   let x = website.indexOf('//');
   let y = website.slice(x+2);
   this.web = y.substr(0, y.length -1);
+  }
   this.reviews = reviews;
   this.rating = rating;
   this.price = price;
@@ -195,7 +207,7 @@ function Place (name, address, placeID, phone, website, reviews, rating, price, 
 
 //new updatePlaces
 function updatePlaces(){
-  $('#places').html('').css('display', 'none');
+  $('#places').html('<h2>My Places in <span id="city">CITY </span></h2>').css('display', 'none');
   for(let i = 0; i<myPlaces.length; i++){
     $('#places').append( `
         <div id="${myPlaces[i].placeID}" class="place-card">
@@ -208,6 +220,7 @@ function updatePlaces(){
           <div class="btn-container">
             <button type="button" id="delete-${i}" class="delete">delete<button type="button" id="schedule-${i}" class="schedule">schedule</button>
             <button type="button" id="unsched-${i}" class="unsched">unschedule</button>
+            <button type="button" id="explore-${i}" class="nearby">explore</button>
           </div>
           <form id="sched-form-${i}">
             <select id="day-time" size=1 required>
@@ -230,6 +243,7 @@ function updatePlaces(){
         setButtonStatus(i);
         addPlaceListeners(i);
   }
+  console.log(myPlaces);
   $('#places').fadeIn(600);
 }
 
@@ -266,6 +280,21 @@ function addPlaceListeners(index) {
       });
     });
   });
+  $(`#explore-${index}`).click(function(e){
+    e.preventDefault();
+    launchModal(index);
+  });
+}
+
+function launchModal(index){
+  console.log('launchModal ran');
+  //hide explore container
+  //fade in iframe.  
+  // Why does it need to be an iframe?  Accessibility?
+  // this could just be a setting a new center and zooming in then bringing up a nearby places form 
+  // which is part of the map div but hidden until the explore button is hit.
+  //Although a separate map might be better so as not to creaet the problem of nearby places markers
+
 }
 
 function addSchedListener(index){
