@@ -50,6 +50,7 @@ let myPlaces = [];
 let markers = [];
 let placeIndex = -1;  //Hack
 let cityCenter = {lat: 40.7829, lng: -73.9654};
+let placeCoord = {lat: 40.7829, lng: -73.9654};
 let itinerary =[];
 //ensure that today is the min date
 let today = new Date().toISOString().split('T')[0];
@@ -68,8 +69,6 @@ function initMap() {
     zoom: 16,
     gestureHandling: 'cooperative'
   });  
-
-
 
 function getCity(){
   $('#trip-form').submit(function(e){
@@ -282,14 +281,14 @@ function addPlaceListeners(index) {
   });
   $(`#explore-${index}`).click(function(e){
     e.preventDefault();
-    launchModal(index);
+    launchExplore(index);
   });
 }
 
-function launchModal(index){
+function launchExplore(index){
   console.log('launchModal ran');
   //hide explore container
-  //fade in iframe.  
+  
   // Why does it need to be an iframe?  Accessibility?
   // this could just be a setting a new center and zooming in then bringing up a nearby places form 
   // which is part of the map div but hidden until the explore button is hit.

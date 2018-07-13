@@ -44,11 +44,15 @@ body, main {
 #exploration {
 	display: none;
 }
-#map {
+#map, #map2 {
 	width: 60%;
 	height: 900px;
 	overflow: auto;
 	/* margin: 0 auto; */
+}
+
+#map2 {
+	display: none;
 }
 
 #place-input {
