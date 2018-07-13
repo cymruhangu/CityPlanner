@@ -44,6 +44,7 @@ body, main {
 #exploration {
 	display: none;
 }
+
 #map, #map2 {
 	width: 60%;
 	height: 900px;
@@ -66,7 +67,6 @@ li {
 	margin-left: 15px;
 }
 
-
 #pac-input.controls {
 	margin-top: 20px;
 	width: 250px;
@@ -85,6 +85,7 @@ li {
 	align-items: flex-start;
 	justify-content: space-evenly;
 }
+
 .place-card {
 	border: 1px solid black;
 	width: 100%;

@@ -50,7 +50,7 @@ let myPlaces = [];
 let markers = [];
 let placeIndex = -1;  //Hack
 let cityCenter = {lat: 40.7829, lng: -73.9654};
-let placeCoord = {lat: 40.7829, lng: -73.9654};
+let placeCoords = {lat: 40.7829, lng: -73.9654};
 let itinerary =[];
 //ensure that today is the min date
 let today = new Date().toISOString().split('T')[0];
@@ -153,9 +153,9 @@ function updateSchedule(){
   }
 }
 
-placeSelection();
+placeSelection(map);
 
-function placeSelection(){
+function placeSelection(map){
   let input = document.getElementById('pac-input');
 
   let autocomplete = new google.maps.places.Autocomplete(input);
@@ -281,18 +281,23 @@ function addPlaceListeners(index) {
   });
   $(`#explore-${index}`).click(function(e){
     e.preventDefault();
-    launchExplore(index);
+    launchModal(index);
   });
 }
 
-function launchExplore(index){
-  console.log('launchModal ran');
-  //hide explore container
-  
-  // Why does it need to be an iframe?  Accessibility?
-  // this could just be a setting a new center and zooming in then bringing up a nearby places form 
-  // which is part of the map div but hidden until the explore button is hit.
-  //Although a separate map might be better so as not to creaet the problem of nearby places markers
+function launchModal(index){
+  console.log(`going to launch zoom on ${myPlaces[index].LatLng}`);
+  map2.setCenter(myPlaces[index].LatLng);
+  addMarker(index, map2);
+  //hide map - unhide map2
+  $('#map').fadeOut(400, function(){
+    $('#map2').fadeIn(400);
+    $('#pac2-input').fadeIn();
+    placeSelection(map2);
+  });
+//don't need pac -input 
+//Places nearby or text search
+
 
 }
 
@@ -381,7 +386,7 @@ function setCoords(index){
       myPlaces[index].lat = foundLat;
       myPlaces[index].lng = foundLng;
       myPlaces[index].LatLng = {lat:foundLat,lng:foundLng};
-      addMarker(index);
+      addMarker(index, map);
     }, 
     error: function(error){
       console.log(`error is ${error}`);
@@ -390,7 +395,7 @@ function setCoords(index){
   });
 }
 
-function addMarker(index){
+function addMarker(index, map){
   let marker = new google.maps.Marker({
     position: myPlaces[index].LatLng,
     label: `${index + 1}`,
