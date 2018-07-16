@@ -48,10 +48,12 @@ let map2 = null;
 let marker = null;
 let myPlaces = [];
 let markers = [];
+let markersModal = [];
 let placeIndex = -1;  //Hack
 let cityCenter = {lat: 40.7829, lng: -73.9654};
 let placeCoords = {lat: 40.7829, lng: -73.9654};
 let itinerary =[];
+let tempPlaces = [];
 //ensure that today is the min date
 let today = new Date().toISOString().split('T')[0];
 $('#arrive').attr('min', today);
@@ -192,9 +194,9 @@ function Place (name, address, placeID, phone, website, reviews, rating, price, 
   this.phone = phone;
   this.url = website;
   if(this.url){
-  let x = website.indexOf('//');
-  let y = website.slice(x+2);
-  this.web = y.substr(0, y.length -1);
+    let x = website.indexOf('//');
+    let y = website.slice(x+2);
+    this.web = y.substr(0, y.length -1);
   }
   this.reviews = reviews;
   this.rating = rating;
@@ -286,19 +288,128 @@ function addPlaceListeners(index) {
 }
 
 function launchModal(index){
-  console.log(`going to launch zoom on ${myPlaces[index].LatLng}`);
   map2.setCenter(myPlaces[index].LatLng);
   addMarker(index, map2);
   //hide map - unhide map2
   $('#map').fadeOut(400, function(){
     $('#map2').fadeIn(400);
-    $('#pac2-input').fadeIn();
+    $('#places').fadeOut(400);
+    $('#itinerary').fadeOut(400);
+    $('#nearby-places').fadeIn(400);
+    $('#map2-info').fadeIn(400);
     placeSelection(map2);
   });
-//don't need pac -input 
 //Places nearby or text search
+addReturnListener();
+//show form for Nearby Places and add listener
+showNearbyForm(index);
+}
+
+//simplify to text search not dropdown
+function showNearbyForm(index){
+  let nearyFormStr = `<span class="nearby-title"><h4>What's near ${myPlaces[index].name}?</h4></span>
+                      <form id="nearby-form-${index}">
+                        <label for="nearby-${index}">Search for nearby places (restaurants, shops, etc):</label>
+                        <input type="text" onfocus="this.value=''" id="nearby-${index}"  required placeholder="search nearby">
+                        <input id="nearby-btn-${index}" type="submit" value="submit">
+                        <button type="button" id="reset-${index}">Reset</button>
+                      </form>`;
+  $('#nearby-places').html(nearyFormStr);
+  addNearbyListener(index);
+  addResetListener(index);
+}
+
+function addNearbyListener(index){
+  $(`#nearby-btn-${index}`).click(function(e){
+    e.preventDefault();
+    let searchTerm = $(`#nearby-${index}`).val();
+    console.log(`searchTerm is ${searchTerm}`);
+    findNearby(index, searchTerm);
+  });
+}
+
+function findNearby(index, searchTerm){
+  let stuff = new google.maps.LatLng(myPlaces[index].LatLng);
+  let service = new google.maps.places.PlacesService(map2);
+  service.textSearch({
+    location: stuff,
+    radius: 0,
+    query: searchTerm
+  }, callback);
+}
+
+function addResetListener(index){
+  $(`#reset-${index}`).click(function(e){
+    console.log('clearing markers');
+    for(let i=0; i<markersModal.length; i++){
+      markersModal[i].setMap(null);
+    }
+    markersModal= [];
+    tempPlaces = [];
+  });
+}
+
+function callback(results, status){
+  console.log(status);
+  console.log(results);
+  if (status == google.maps.places.PlacesServiceStatus.OK) {
+    for (let i = 0; i < results.length; i++) {
+      let place = results[i];
+      //need to know url before I call createMarker
+      getUrl(place.place_id, i);
+      createMarker(results[i], i);
+    }
+  }
+}
+
+function createMarker(place, index) {
+  let placeLoc = place.geometry.location;
+  let marker = new google.maps.Marker({
+    map: map2,
+    position: place.geometry.location
+  });
+  markersModal.push(marker);
+  let infowindow = new google.maps.InfoWindow();
+  google.maps.event.addListener(marker, 'click', function() {
+    let contentStr =`${place.name}<br>
+                      price: ${place.price_level}<br>
+                      rating: ${place.rating}<br>
+                      <a href="${tempPlaces[index]}" target="_blank">${tempPlaces[index]}</a>`;
+    infowindow.setContent(contentStr);
+    infowindow.open(map, this);
+  }, function(place, status){
+    if (status === google.maps.places.PlacesServiceStatus.OK){
+      // do I need this callback for anything?
+    }
+  });
+}
 
 
+function getUrl(placeID, index){
+  let webAddress = '';
+  let service = new google.maps.places.PlacesService(map2);
+  service.getDetails({
+    placeId: placeID
+  }, function(place, status){
+    if (status === google.maps.places.PlacesServiceStatus.OK){
+      webAddress = place.website;
+      tempPlaces[index] = webAddress;
+    }
+  });
+}
+
+function addReturnListener(){
+  $('#return').click(function(e){
+    $('#map2').fadeOut(400, function(){
+      $('#map2-info').fadeOut(400);
+      $('#nearby-places').fadeOut(400);
+      $('#pac-input.controls').fadeIn(400);
+      $('#map').fadeIn(400);
+      $('#places').fadeIn(400);
+      $('#itinerary').fadeIn(400);
+    });
+    placeSelection(map);
+  });
 }
 
 function addSchedListener(index){

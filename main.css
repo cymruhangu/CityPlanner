@@ -49,11 +49,36 @@ body, main {
 	width: 60%;
 	height: 900px;
 	overflow: auto;
+	z-index: 0;
 	/* margin: 0 auto; */
 }
 
 #map2 {
 	display: none;
+}
+
+#map2-info {
+	display: none;
+	background-color:#669ef9;
+	width: 20%;
+	position: absolute;
+	top: 0;
+	right: 20%;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: flex-start;
+	justify-content: space-evenly;
+
+}
+
+#nearby-places {
+	display: none;
+	background-color:#e0caa8;
+	width: 20%;
+	position: absolute;
+	top: 0;
+	right: 0;
+	margin-bottom: 50px;
 }
 
 #place-input {
@@ -69,9 +94,11 @@ li {
 
 #pac-input.controls {
 	margin-top: 20px;
-	width: 250px;
-	height: 25px;
+	width: 400px;
+	height: 30px;
+	font-size: 1.5em;
 	background-color: pink;
+	z-index: 1;
 }
 
 #places {
@@ -114,7 +141,6 @@ li {
 #itinerary {
 	background-color: #5ec9ed;
 	width: 20%;
-	/* height: 1000px; */
 	position: absolute;
 	top: 0;
 	right: 0;
