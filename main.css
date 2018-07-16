@@ -92,7 +92,11 @@ li {
 	margin-left: 15px;
 }
 
-#pac-input.controls {
+/* #pac2-input {
+	display: none;
+} */
+
+#pac-input.controls, #pac2-input.controls {
 	margin-top: 20px;
 	width: 400px;
 	height: 30px;

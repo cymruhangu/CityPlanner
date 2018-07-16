@@ -54,6 +54,7 @@ let cityCenter = {lat: 40.7829, lng: -73.9654};
 let placeCoords = {lat: 40.7829, lng: -73.9654};
 let itinerary =[];
 let tempPlaces = [];
+let ac2Called = false;
 //ensure that today is the min date
 let today = new Date().toISOString().split('T')[0];
 $('#arrive').attr('min', today);
@@ -155,11 +156,20 @@ function updateSchedule(){
   }
 }
 
-placeSelection(map);
+//The first autocomplete instance is always bound to the same map.
+placeSelection(map, '1');
+//The second autocomplete ?
 
-function placeSelection(map){
-  let input = document.getElementById('pac-input');
 
+function placeSelection(map, mapNum){
+  console.log(`mapNum is ${mapNum}`);
+  let input = '';
+  if(mapNum == 1 ){
+    input = document.getElementById('pac-input');
+  }
+  else if (mapNum == 2){
+    input = document.getElementById('pac2-input');
+  }
   let autocomplete = new google.maps.places.Autocomplete(input);
   autocomplete.bindTo('bounds', map);
 
@@ -297,7 +307,10 @@ function launchModal(index){
     $('#itinerary').fadeOut(400);
     $('#nearby-places').fadeIn(400);
     $('#map2-info').fadeIn(400);
-    placeSelection(map2);
+    if(!ac2Called){
+    placeSelection(map2, '2');
+    ac2Called = true;
+    }
   });
 //Places nearby or text search
 addReturnListener();
@@ -408,7 +421,7 @@ function addReturnListener(){
       $('#places').fadeIn(400);
       $('#itinerary').fadeIn(400);
     });
-    placeSelection(map);
+    // placeSelection(map);
   });
 }
 
