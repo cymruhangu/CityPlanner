@@ -192,6 +192,8 @@ function placeSelection(map, mapNum){
     updatePlaces();
     ///clear the autocomplete input
     document.getElementById('pac-input').value = '';
+    document.getElementById('pac2-input').value = '';
+
   });
 }
 // }// end of initMap()
@@ -308,6 +310,7 @@ function launchModal(index){
     $('#nearby-places').fadeIn(400);
     $('#map2-info').fadeIn(400);
     if(!ac2Called){
+    $('#pac2-input.controls').fadeIn();  //HACK!! Fixes weird behavior of pac window on first call. 
     placeSelection(map2, '2');
     ac2Called = true;
     }
@@ -353,13 +356,16 @@ function findNearby(index, searchTerm){
 
 function addResetListener(index){
   $(`#reset-${index}`).click(function(e){
-    console.log('clearing markers');
+    clearModalMarkers();
+  });
+}
+
+function clearModalMarkers(){
     for(let i=0; i<markersModal.length; i++){
       markersModal[i].setMap(null);
     }
     markersModal= [];
     tempPlaces = [];
-  });
 }
 
 function callback(results, status){
@@ -397,7 +403,6 @@ function createMarker(place, index) {
   });
 }
 
-
 function getUrl(placeID, index){
   let webAddress = '';
   let service = new google.maps.places.PlacesService(map2);
@@ -413,6 +418,7 @@ function getUrl(placeID, index){
 
 function addReturnListener(){
   $('#return').click(function(e){
+    map.setZoom(12);
     $('#map2').fadeOut(400, function(){
       $('#map2-info').fadeOut(400);
       $('#nearby-places').fadeOut(400);
@@ -421,7 +427,8 @@ function addReturnListener(){
       $('#places').fadeIn(400);
       $('#itinerary').fadeIn(400);
     });
-    // placeSelection(map);
+    clearModalMarkers();
+    map2.setZoom(16);
   });
 }
 

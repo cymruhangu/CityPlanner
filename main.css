@@ -47,7 +47,7 @@ body, main {
 
 #map, #map2 {
 	width: 60%;
-	height: 900px;
+	height: 100%;
 	overflow: auto;
 	z-index: 0;
 	/* margin: 0 auto; */
@@ -92,9 +92,9 @@ li {
 	margin-left: 15px;
 }
 
-/* #pac2-input {
+#pac2-input.controls {
 	display: none;
-} */
+}
 
 #pac-input.controls, #pac2-input.controls {
 	margin-top: 20px;
