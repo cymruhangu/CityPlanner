@@ -52,6 +52,7 @@ let markersModal = [];
 let placeIndex = -1;  //Hack
 let cityCenter = {lat: 40.7829, lng: -73.9654};
 let placeCoords = {lat: 40.7829, lng: -73.9654};
+let cityImg ="";
 let itinerary =[];
 let tempPlaces = [];
 let ac2Called = false;
@@ -79,12 +80,9 @@ function getCity(){
     let selectedCity = $('select#city').find('option:selected').val();
     console.log(`city is: ${selectedCity}`);
     setCenter(selectedCity);
-    let first = moment(new Date($('#arrive').val()));
-    let offset = new Date().getTimezoneOffset();
-    let firstDay = moment(first).add(offset, 'minutes');
-    createItinerary(firstDay);
     $('#splash').fadeOut(600, function(){
-      $('#exploration').fadeIn(600);
+      $('#splash-2').fadeIn(600);
+      getArrival();
     });
   });
 }
@@ -96,8 +94,23 @@ function setCenter(cityAbbrv){
       let Lng = cityCenters[i].center.lng;
       console.log(`setting center to ${cityAbbrv}`);
       map.setCenter(cityCenters[i].center);
+      cityImg = `url('${cityCenters[i].img}')`;
+	    $('#splash-2').css("background-image", "" + cityImg );
     }
   }
+}
+
+function getArrival(){
+  $('#date-form').submit(function(e){
+    e.preventDefault();
+    let first = moment(new Date($('#arrive').val()));
+    let offset = new Date().getTimezoneOffset();
+    let firstDay = moment(first).add(offset, 'minutes');
+    createItinerary(firstDay);
+    $('#splash-2').fadeOut(600, function(){
+      $('#exploration').fadeIn(400);
+    });
+  });
 }
 
 function daysCalc(date1, date2){
