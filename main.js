@@ -77,7 +77,7 @@ function initMap() {
 function getCity(){
   $('#trip-form').submit(function(e){
     e.preventDefault();
-    let selectedCity = $('select#city').find('option:selected').val();
+    const selectedCity = $('select#city').find('option:selected').val();
     console.log(`city is: ${selectedCity}`);
     setCenter(selectedCity);
     $('#splash').fadeOut(600, function(){
@@ -87,11 +87,12 @@ function getCity(){
   });
 }
 
+//forEach refactor
 function setCenter(cityAbbrv){
   for(let i = 0; i <cityCenters.length; i++){
     if(cityCenters[i].city === cityAbbrv){
-      let Lat = cityCenters[i].center.lat;
-      let Lng = cityCenters[i].center.lng;
+      const Lat = cityCenters[i].center.lat;
+      const Lng = cityCenters[i].center.lng;
       console.log(`setting center to ${cityAbbrv}`);
       map.setCenter(cityCenters[i].center);
       cityImg = `url('${cityCenters[i].img}')`;
@@ -100,12 +101,13 @@ function setCenter(cityAbbrv){
   }
 }
 
+//User selects arrival date, handle date
 function getArrival(){
   $('#date-form').submit(function(e){
     e.preventDefault();
-    let first = moment(new Date($('#arrive').val()));
-    let offset = new Date().getTimezoneOffset();
-    let firstDay = moment(first).add(offset, 'minutes');
+    const first = moment(new Date($('#arrive').val()));
+    const offset = new Date().getTimezoneOffset();
+    const firstDay = moment(first).add(offset, 'minutes');
     createItinerary(firstDay);
     $('#splash-2').fadeOut(600, function(){
       $('#exploration').fadeIn(400);
@@ -113,34 +115,37 @@ function getArrival(){
   });
 }
 
-function daysCalc(date1, date2){
-  return parseInt((date2 - date1) / (24 * 3600 * 1000));
-}
+// function daysCalc(date1, date2){
+//   return parseInt((date2 - date1) / (24 * 3600 * 1000));
+// }
 
 function createItinerary(firstDay){
-  let numDays = 5;
+  const numDays = 5;
    //create object with date and array of places
   for(let i = 0; i<numDays; i++){
-    let newDate = moment(firstDay).add(i, 'days');
-    let placesObj = {
+    const newDate = moment(firstDay).add(i, 'days');
+    const placesObj = {
                         am: [],
                         pm: [],
                         eve: []
     };
-    let newDay = new cityDay(newDate, placesObj);
+    const newDay = {
+      date: newDate, 
+      places: placesObj
+    };
     itinerary.push(newDay);
   }
   updateSchedule();
 }
 
-function cityDay(date, placesObj){
-  this.date = date;
-  this.places = placesObj
-}
+// function cityDay(date, placesObj){
+//   this.date = date;
+//   this.places = placesObj
+// }
 
 function updateSchedule(){
   $('#itinerary').html('<h2>Itinerary:</h2>');
-  for(let i = 0; i<itinerary.length; i++){
+  for(let i = 0; i<itinerary.length; i++){ //forEach refactor
     let dateCard = `
       <div id="day${i}" class="dayDiv">
         <span class="day">${moment(itinerary[i].date).format("ddd,ll")}:</span>`;
@@ -173,7 +178,7 @@ function updateSchedule(){
 placeSelection(map, '1');
 //The second autocomplete ?
 
-
+//adds listener to AC input and calls google place,  creates place Object
 function placeSelection(map, mapNum){
   console.log(`mapNum is ${mapNum}`);
   let input = '';
@@ -234,7 +239,7 @@ function Place (name, address, placeID, phone, website, reviews, rating, price, 
 //new updatePlaces
 function updatePlaces(){
   $('#places').html('<h2>My Places in <span id="city">CITY </span></h2>').css('display', 'none');
-  for(let i = 0; i<myPlaces.length; i++){
+  for(let i = 0; i<myPlaces.length; i++){  //forEACH
     $('#places').append( `
         <div id="${myPlaces[i].placeID}" class="place-card">
           <ul class="place-info:">
@@ -335,6 +340,7 @@ showNearbyForm(index);
 }
 
 //simplify to text search not dropdown
+//create HTML in seperate function
 function showNearbyForm(index){
   let nearyFormStr = `<span class="nearby-title"><h4>What's near ${myPlaces[index].name}?</h4></span>
                       <form id="nearby-form-${index}">
@@ -525,8 +531,8 @@ function setCoords(index){
       key: `${mapsAPIKey}`
     },
     success: function(data) {
-      let foundLat = data.results[0].geometry.location.lat;
-      let foundLng = data.results[0].geometry.location.lng;
+      const foundLat = data.results[0].geometry.location.lat;
+      const foundLng = data.results[0].geometry.location.lng;
       myPlaces[index].lat = foundLat;
       myPlaces[index].lng = foundLng;
       myPlaces[index].LatLng = {lat:foundLat,lng:foundLng};
