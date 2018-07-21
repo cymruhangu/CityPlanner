@@ -46,12 +46,13 @@ const cityCenters = [
 let map = null;
 let map2 = null;
 let marker = null;
-let myPlaces = [];
-let markers = [];
+const myPlaces = [];
+const markers = [];
 let markersModal = [];
-let placeIndex = -1;  //Hack
-let cityCenter = {lat: 40.7829, lng: -73.9654};
-let placeCoords = {lat: 40.7829, lng: -73.9654};
+let placeIndex = -1;  //Hack .. Making Hotel index 0 will fix this.
+let thisCity = {};
+const cityCenter = {lat: 40.7829, lng: -73.9654};
+const placeCoords = {lat: 40.7829, lng: -73.9654};
 let cityImg ="";
 let itinerary =[];
 let tempPlaces = [];
@@ -78,7 +79,6 @@ function getCity(){
   $('#trip-form').submit(function(e){
     e.preventDefault();
     const selectedCity = $('select#city').find('option:selected').val();
-    console.log(`city is: ${selectedCity}`);
     setCenter(selectedCity);
     $('#splash').fadeOut(600, function(){
       $('#splash-2').fadeIn(600);
@@ -87,18 +87,19 @@ function getCity(){
   });
 }
 
-//forEach refactor
+//------
 function setCenter(cityAbbrv){
-  for(let i = 0; i <cityCenters.length; i++){
-    if(cityCenters[i].city === cityAbbrv){
-      const Lat = cityCenters[i].center.lat;
-      const Lng = cityCenters[i].center.lng;
-      console.log(`setting center to ${cityAbbrv}`);
-      map.setCenter(cityCenters[i].center);
-      cityImg = `url('${cityCenters[i].img}')`;
+  cityCenters.forEach(function(element) {
+    if(element.city === cityAbbrv){
+      thisCity = element;
+      console.log(`thisCity is ${thisCity.name}`);
+      const Lat = element.center.lat;
+      const Lng = element.center.lng;
+      map.setCenter(element.center);
+      cityImg = `url('${element.img}')`;
 	    $('#splash-2').css("background-image", "" + cityImg );
     }
-  }
+  });
 }
 
 //User selects arrival date, handle date
@@ -114,10 +115,6 @@ function getArrival(){
     });
   });
 }
-
-// function daysCalc(date1, date2){
-//   return parseInt((date2 - date1) / (24 * 3600 * 1000));
-// }
 
 function createItinerary(firstDay){
   const numDays = 5;
@@ -138,10 +135,6 @@ function createItinerary(firstDay){
   updateSchedule();
 }
 
-// function cityDay(date, placesObj){
-//   this.date = date;
-//   this.places = placesObj
-// }
 
 function updateSchedule(){
   $('#itinerary').html('<h2>Itinerary:</h2>');
@@ -236,17 +229,18 @@ function Place (name, address, placeID, phone, website, reviews, rating, price, 
   this.schedDay = ["","","","",""];
 }
 
-//new updatePlaces
+// FOREACH REFACTOR
+// 
 function updatePlaces(){
-  $('#places').html('<h2>My Places in <span id="city">CITY </span></h2>').css('display', 'none');
-  for(let i = 0; i<myPlaces.length; i++){  //forEACH
+  $('#places').html(`<h2>My Places in <span id="city">${thisCity.name} </span></h2>`).css('display', 'none');
+  myPlaces.forEach(function(place, i){  //forEACH
     $('#places').append( `
-        <div id="${myPlaces[i].placeID}" class="place-card">
+        <div id="${place.placeID}" class="place-card">
           <ul class="place-info:">
             <li><span id="place-name">${i + 1}.&nbsp ${myPlaces[i].name}</span></li>
-            <li>${myPlaces[i].vicinity}</li>
-            <li>${myPlaces[i].phone}</li>
-            <li><a href="${myPlaces[i].url}" target="_blank">${myPlaces[i].web}</a></li>
+            <li>${place.vicinity}</li>
+            <li>${place.phone}</li>
+            <li><a href="${place.url}" target="_blank">${place.web}</a></li>
           </ul>
           <div class="btn-container">
             <button type="button" id="delete-${i}" class="delete">delete<button type="button" id="schedule-${i}" class="schedule">schedule</button>
@@ -271,12 +265,14 @@ function updatePlaces(){
             <input id="sched-btn-${i}" type="submit" value="submit">
           </form>
         </div>`);
+        //Ask Ali
+        //Why would I move these 2 function calls when I have i here?  
         setButtonStatus(i);
         addPlaceListeners(i);
-  }
-  console.log(myPlaces);
+  });
   $('#places').fadeIn(600);
 }
+///---------
 
 function setButtonStatus(index){
     if(myPlaces[index].scheduled){
@@ -316,7 +312,8 @@ function addPlaceListeners(index) {
     launchModal(index);
   });
 }
-
+//REFACTOR!!!
+//Zoom in on place and reveal Nearby form underneath.
 function launchModal(index){
   map2.setCenter(myPlaces[index].LatLng);
   addMarker(index, map2);
@@ -339,19 +336,23 @@ addReturnListener();
 showNearbyForm(index);
 }
 
-//simplify to text search not dropdown
-//create HTML in seperate function
-function showNearbyForm(index){
-  let nearyFormStr = `<span class="nearby-title"><h4>What's near ${myPlaces[index].name}?</h4></span>
-                      <form id="nearby-form-${index}">
-                        <label for="nearby-${index}">Search for nearby places (restaurants, shops, etc):</label>
-                        <input type="text" onfocus="this.value=''" id="nearby-${index}"  required placeholder="search nearby">
-                        <input id="nearby-btn-${index}" type="submit" value="submit">
-                        <button type="button" id="reset-${index}">Reset</button>
-                      </form>`;
+
+//create HTML in seperate function --REFACTOR
+function showNearbyForm(index){ 
+  let nearyFormStr = createNearbyFormHTML(index);
   $('#nearby-places').html(nearyFormStr);
   addNearbyListener(index);
   addResetListener(index);
+}
+
+function createNearbyFormHTML(index){
+  return `<span class="nearby-title"><h4>What's near ${myPlaces[index].name}?</h4></span>
+          <form id="nearby-form-${index}">
+            <label for="nearby-${index}">Search for nearby places (restaurants, shops, etc):</label>
+            <input type="text" onfocus="this.value=''" id="nearby-${index}"  required placeholder="search nearby">
+            <input id="nearby-btn-${index}" type="submit" value="submit">
+            <button type="button" id="reset-${index}">Reset</button>
+          </form>`;
 }
 
 function addNearbyListener(index){
@@ -408,7 +409,7 @@ function createMarker(place, index) {
   });
   markersModal.push(marker);
   let infowindow = new google.maps.InfoWindow();
-  google.maps.event.addListener(marker, 'click', function() {
+  google.maps.event.addListener(marker, 'click', function() {  //MAYBE REFACTOR INTO SEPARATE FUNCTION
     let contentStr =`${place.name}<br>
                       price: ${place.price_level}<br>
                       rating: ${place.rating}<br>
