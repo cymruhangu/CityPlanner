@@ -44,19 +44,18 @@ const cityCenters = [
 ];
 
 let map = null;
-let map2 = null;
 let marker = null;
 const myPlaces = [];
 const markers = [];
 let markersModal = [];
-let placeIndex = -1;  //Hack .. Making Hotel index 0 will fix this.
+let placeIndex = 0; 
 let thisCity = {};
 const cityCenter = {lat: 40.7829, lng: -73.9654};
 const placeCoords = {lat: 40.7829, lng: -73.9654};
 let cityImg ="";
 let itinerary =[];
 let tempPlaces = [];
-let ac2Called = false;
+let hotelSelected = false;
 //ensure that today is the min date
 let today = new Date().toISOString().split('T')[0];
 $('#arrive').attr('min', today);
@@ -68,12 +67,6 @@ function initMap() {
     zoom: 12,
     gestureHandling: 'cooperative'
   });
-
-  map2 = new google.maps.Map(document.getElementById('map2'), {
-    center: placeCoords,
-    zoom: 16,
-    gestureHandling: 'cooperative'
-  });  
 
 function getCity(){
   $('#trip-form').submit(function(e){
@@ -135,7 +128,6 @@ function createItinerary(firstDay){
   updateSchedule();
 }
 
-
 function updateSchedule(){
   $('#itinerary').html('<h2>Itinerary:</h2>');
   for(let i = 0; i<itinerary.length; i++){ //forEach refactor
@@ -168,19 +160,12 @@ function updateSchedule(){
 }
 
 //The first autocomplete instance is always bound to the same map.
-placeSelection(map, '1');
-//The second autocomplete ?
+placeSelection(map);
 
 //adds listener to AC input and calls google place,  creates place Object
-function placeSelection(map, mapNum){
-  console.log(`mapNum is ${mapNum}`);
+function placeSelection(map){
   let input = '';
-  if(mapNum == 1 ){
-    input = document.getElementById('pac-input');
-  }
-  else if (mapNum == 2){
-    input = document.getElementById('pac2-input');
-  }
+  input = document.getElementById('pac-input');
   let autocomplete = new google.maps.places.Autocomplete(input);
   autocomplete.bindTo('bounds', map);
 
@@ -196,15 +181,20 @@ function placeSelection(map, mapNum){
     let selected = new Place(place.name, place.formatted_address, place.place_id,
      place.formatted_phone_number, place.website, place.reviews, place.rating, place.price_level, place.vicinity);
     //push new place to places array
-    myPlaces.push(selected);
-    placeIndex++;
-    //set the coords for new place object
-    setCoords(placeIndex);
+    if(hotelSelected){
+        myPlaces.push(selected);
+        placeIndex++;
+        //set the coords for new place object
+        setCoords(placeIndex);
+    }else {
+      console.log("Selecting hotel");
+      myPlaces[0] = selected;
+      setCoords(0);
+      hotelSelected = true;
+    } 
     updatePlaces();
     ///clear the autocomplete input
     document.getElementById('pac-input').value = '';
-    document.getElementById('pac2-input').value = '';
-
   });
 }
 // }// end of initMap()
@@ -229,23 +219,28 @@ function Place (name, address, placeID, phone, website, reviews, rating, price, 
   this.schedDay = ["","","","",""];
 }
 
-// FOREACH REFACTOR
 // 
 function updatePlaces(){
   $('#places').html(`<h2>My Places in <span id="city">${thisCity.name} </span></h2>`).css('display', 'none');
+  //Display hotel first,  Buttons and logic will be different.
   myPlaces.forEach(function(place, i){  //forEACH
+    let placeNum = (i === 0)?'H': i;
+    let hideVal = (i ===0)?'hidden': '';
+    let delText = (i===0)?'change': 'delete';
     $('#places').append( `
         <div id="${place.placeID}" class="place-card">
           <ul class="place-info:">
-            <li><span id="place-name">${i + 1}.&nbsp ${myPlaces[i].name}</span></li>
+            <li><span id="place-name">${placeNum}.&nbsp ${myPlaces[i].name}</span></li>
             <li>${place.vicinity}</li>
             <li>${place.phone}</li>
             <li><a href="${place.url}" target="_blank">${place.web}</a></li>
           </ul>
           <div class="btn-container">
-            <button type="button" id="delete-${i}" class="delete">delete<button type="button" id="schedule-${i}" class="schedule">schedule</button>
+            <button type="button" id="delete-${i}" class="delete">${delText}</button>
+            <button type="button" id="schedule-${i}" class="schedule" ${hideVal}>schedule</button>
             <button type="button" id="unsched-${i}" class="unsched">unschedule</button>
             <button type="button" id="explore-${i}" class="nearby">explore</button>
+            <button id="return-${i}" class="return" type="button">return</button>
           </div>
           <form id="sched-form-${i}">
             <select id="day-time" size=1 required>
@@ -264,6 +259,7 @@ function updatePlaces(){
             </select>
             <input id="sched-btn-${i}" type="submit" value="submit">
           </form>
+          <div id="nearbydiv-${i}" class="explore"></div>
         </div>`);
         //Ask Ali
         //Why would I move these 2 function calls when I have i here?  
@@ -274,7 +270,9 @@ function updatePlaces(){
 }
 ///---------
 
-function setButtonStatus(index){
+function setButtonStatus(index){  
+  //CHAIN THESE ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  $('.return').css('display', 'none');
     if(myPlaces[index].scheduled){
       $(`#schedule-${index}`).css('display', 'none');
       $(`#delete-${index}`).css('display', 'none');
@@ -286,15 +284,24 @@ function setButtonStatus(index){
     }
 }
 //---------
-
+// Should be 3 separate functions
 function addPlaceListeners(index) {
   $(`#delete-${index}`).click(function(e){
     e.preventDefault();
+    //if index = 0, call change hotel
+    if(index === 0){
+      console.log('changing hotels');
+      removeMarker(0);
+      alert('find new hotel');
+      // myPlaces[0] = {};
+      hotelSelected = false;
+    } else {
     //remove marker
-    removeMarker(index);
-    let removed = myPlaces.splice(`${index}`, 1);
-    updatePlaces();
-    placeIndex--;
+      removeMarker(index);
+    // let removed = myPlaces.splice(`${index}`, 1);
+      updatePlaces();
+      placeIndex--;
+    }
   });
 
   $(`#schedule-${index}`).click(function(e){
@@ -309,44 +316,44 @@ function addPlaceListeners(index) {
   });
   $(`#explore-${index}`).click(function(e){
     e.preventDefault();
-    launchModal(index);
+    launchExplore(index);
   });
 }
-//REFACTOR!!!
+
+function changeHotel(){
+  alert("Search for your new hotel name:");
+  //insert in myPlace[0];
+}
+
 //Zoom in on place and reveal Nearby form underneath.
-function launchModal(index){
-  map2.setCenter(myPlaces[index].LatLng);
-  addMarker(index, map2);
-  //hide map - unhide map2
+function launchExplore(index){
   $('#map').fadeOut(400, function(){
-    $('#map2').fadeIn(400);
-    $('#places').fadeOut(400);
-    $('#itinerary').fadeOut(400);
-    $('#nearby-places').fadeIn(400);
-    $('#map2-info').fadeIn(400);
-    if(!ac2Called){
-    $('#pac2-input.controls').fadeIn();  //HACK!! Fixes weird behavior of pac window on first call. 
-    placeSelection(map2, '2');
-    ac2Called = true;
-    }
+    map.setCenter(myPlaces[index].LatLng);
+    map.setZoom(16);
+    $('#map').fadeIn(400);
+    $(`#delete-${index}, #explore-${index},#schedule-${index}`).fadeOut(400);
+    $(`#return-${index}`).fadeIn(400);
+    $(`#nearbydiv-${index}`).fadeIn(400);
+    $(`#nearby-form-${index}`).fadeIn(400);
   });
 //Places nearby or text search
 addReturnListener();
 //show form for Nearby Places and add listener
 showNearbyForm(index);
+//disable/hide explore ******************************************
 }
 
-
-//create HTML in seperate function --REFACTOR
+//create HTML 
 function showNearbyForm(index){ 
   let nearyFormStr = createNearbyFormHTML(index);
-  $('#nearby-places').html(nearyFormStr);
+  console.log(nearyFormStr);
+  $(`#nearbydiv-${index}`).append(nearyFormStr);
   addNearbyListener(index);
   addResetListener(index);
 }
 
 function createNearbyFormHTML(index){
-  return `<span class="nearby-title"><h4>What's near ${myPlaces[index].name}?</h4></span>
+  return `<span class="nearby-title"><h6>What's near ${myPlaces[index].name}?</h6></span>
           <form id="nearby-form-${index}">
             <label for="nearby-${index}">Search for nearby places (restaurants, shops, etc):</label>
             <input type="text" onfocus="this.value=''" id="nearby-${index}"  required placeholder="search nearby">
@@ -366,7 +373,7 @@ function addNearbyListener(index){
 
 function findNearby(index, searchTerm){
   let stuff = new google.maps.LatLng(myPlaces[index].LatLng);
-  let service = new google.maps.places.PlacesService(map2);
+  let service = new google.maps.places.PlacesService(map);
   service.textSearch({
     location: stuff,
     radius: 0,
@@ -376,16 +383,12 @@ function findNearby(index, searchTerm){
 
 function addResetListener(index){
   $(`#reset-${index}`).click(function(e){
-    clearModalMarkers();
-  });
-}
-
-function clearModalMarkers(){
-    for(let i=0; i<markersModal.length; i++){
-      markersModal[i].setMap(null);
-    }
+    markersModal.forEach(function(element){
+      element.setMap(null);
+    });
     markersModal= [];
     tempPlaces = [];
+ });
 }
 
 function callback(results, status){
@@ -404,7 +407,7 @@ function callback(results, status){
 function createMarker(place, index) {
   let placeLoc = place.geometry.location;
   let marker = new google.maps.Marker({
-    map: map2,
+    map: map,
     position: place.geometry.location
   });
   markersModal.push(marker);
@@ -425,7 +428,7 @@ function createMarker(place, index) {
 
 function getUrl(placeID, index){
   let webAddress = '';
-  let service = new google.maps.places.PlacesService(map2);
+  let service = new google.maps.places.PlacesService(map);
   service.getDetails({
     placeId: placeID
   }, function(place, status){
@@ -437,18 +440,15 @@ function getUrl(placeID, index){
 }
 
 function addReturnListener(){
-  $('#return').click(function(e){
-    map.setZoom(12);
-    $('#map2').fadeOut(400, function(){
-      $('#map2-info').fadeOut(400);
-      $('#nearby-places').fadeOut(400);
-      $('#pac-input.controls').fadeIn(400);
+  $('.return').click(function(e){
+    $('#map').fadeOut(400, function(){
+      map.setCenter(thisCity.center);
+      map.setZoom(12);
       $('#map').fadeIn(400);
-      $('#places').fadeIn(400);
       $('#itinerary').fadeIn(400);
     });
-    clearModalMarkers();
-    map2.setZoom(16);
+    clearNearbyMarkers();
+    updatePlaces();
   });
 }
 
@@ -469,8 +469,6 @@ function addSchedListener(index){
     if(!itinerary[date].places[period].includes(thisPlace)){
       itinerary[date].places[period].push(thisPlace);
     };
-    // console.log(myPlaces);
-    // console.log(itinerary);
     $(`#sched-form-${index}`).fadeOut(300, function(){
       $(`#unsched-${index}`).fadeIn(300);
     });
@@ -481,21 +479,15 @@ function addSchedListener(index){
 function addUnschedListener(index){
   $(`#unsched-${index}`).click(function(e){
     myPlaces[index].scheduled = false;
-
     //find which day/time scheduled
     let dayTime = findDayTime(index);
     let day = dayTime[0];
     let time = dayTime[1];
-
     let name = myPlaces[index].name;
-
     //remove place from itinerary[day].places[time]
     let x = itinerary[day].places[time].indexOf(name);
     //place empty string in myPlaces[index].schedDay
     itinerary[day].places[time].splice(x, 1);
-    console.log(`from unsched: x is ${x}`);
-    console.log(myPlaces);
-    console.log(itinerary);
     //hide unsched, reveal delete and sched
     $(`#unsched-${index}`).fadeOut(200, function(){
       $(`#delete-${index}, #schedule-${index}`).fadeIn(300);
@@ -537,7 +529,7 @@ function setCoords(index){
       myPlaces[index].lat = foundLat;
       myPlaces[index].lng = foundLng;
       myPlaces[index].LatLng = {lat:foundLat,lng:foundLng};
-      addMarker(index, map);
+      addMarker(index);
     }, 
     error: function(error){
       console.log(`error is ${error}`);
@@ -546,12 +538,21 @@ function setCoords(index){
   });
 }
 
-function addMarker(index, map){
+function addMarker(index){
+  // console.log(`adding marker for ${index}`);
+  let label = '';
+  let id = '';
+  if(index === 0){
+    label = 'H'; 
+  } else {
+    label = `${index}`;
+    console.log(`adding marker for ${index}`);
+  }
   let marker = new google.maps.Marker({
     position: myPlaces[index].LatLng,
-    label: `${index + 1}`,
+    label: label,
     map:map,
-    id: `${index + 1}`
+    id: `${index}`
   });
 
   markers.push(marker);

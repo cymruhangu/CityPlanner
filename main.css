@@ -155,6 +155,14 @@ li {
 	display: none;
 }
 
+#nearbydiv {
+	display: none;
+}
+
+button .return {
+	display: none;
+}
+
 p.period {
 	font-size: 0.75em;
 	font-style: italic;
@@ -186,12 +194,12 @@ p.period {
 	font-weight: bold;
 }
 
-#drop-target {
+/* #drop-target {
 	border: 1px solid red;
 	width: 500px;
 	height: 500px;
 	background-color: bisque;
-}
+} */
 
 #place-name {
 	font-weight: bold;
