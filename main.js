@@ -306,7 +306,7 @@ function addPlaceListeners(index) {
 
   $(`#schedule-${index}`).click(function(e){
     e.preventDefault();
-    $(`#schedule-${index}`).fadeOut(400, function(){
+    $(`#schedule-${index}`).fadeOut(400, function(){  //CHAIN THESE*********
       $(`#delete-${index}`).fadeOut(400, function(){
         $(`#sched-form-${index}`).fadeIn(400, function(){
           addSchedListener(index);
@@ -331,7 +331,7 @@ function launchExplore(index){
     map.setCenter(myPlaces[index].LatLng);
     map.setZoom(16);
     $('#map').fadeIn(400);
-    $(`#delete-${index}, #explore-${index},#schedule-${index}`).fadeOut(400);
+    $(`#delete-${index}, .nearby, #schedule-${index}`).fadeOut(400);
     $(`#return-${index}`).fadeIn(400);
     $(`#nearbydiv-${index}`).fadeIn(400);
     $(`#nearby-form-${index}`).fadeIn(400);
@@ -441,11 +441,11 @@ function getUrl(placeID, index){
 
 function addReturnListener(){
   $('.return').click(function(e){
-    $('#map').fadeOut(400, function(){
+    $('#map, .explore, .return').fadeOut(400, function(){
       map.setCenter(thisCity.center);
       map.setZoom(12);
-      $('#map').fadeIn(400);
-      $('#itinerary').fadeIn(400);
+      $('#map, .nearby, .delete').fadeIn(400);
+      // $('#itinerary').fadeIn(400);
     });
     clearNearbyMarkers();
     updatePlaces();
