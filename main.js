@@ -64,7 +64,7 @@ function initMap() {
   getCity();
   map = new google.maps.Map(document.getElementById('map'), {
     center: cityCenter,
-    zoom: 13,
+    zoom: 12,
     gestureHandling: 'cooperative'
   });
 
@@ -251,7 +251,7 @@ function Place (name, address, placeID, phone, website, reviews, rating, price, 
 
 // 
 function updatePlaces(){
-  // $('#places').html(`<h2>My Places in <span id="city">${thisCity.name} </span></h2>`).css('display', 'none');
+  $('#places').html('').css('display', 'none');
   //Display hotel first,  Buttons and logic will be different.
   myPlaces.forEach(function(place, i){  //forEACH
     let placeNum = (i === 0)?'H': i;
@@ -384,8 +384,8 @@ function showNearbyForm(index){
 function createNearbyFormHTML(index){
   return `<span class="nearby-title"><h6>What's near ${myPlaces[index].name}?</h6></span>
           <form id="nearby-form-${index}">
-            <label for="nearby-${index}">Search for nearby places (restaurants, shops, etc):</label>
-            <input type="text" onfocus="this.value=''" id="nearby-${index}"  required placeholder="search nearby">
+            <label for="nearby-${index}">Nearby places:</label>
+            <input type="text" onfocus="this.value=''" id="nearby-${index}"  required placeholder="ex - italian restaurant, museum, drug store">
             <input id="nearby-btn-${index}" type="submit" value="submit">
             <button type="button" id="reset-${index}">Reset</button>
           </form>`;

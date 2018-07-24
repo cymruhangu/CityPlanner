@@ -50,7 +50,8 @@ button[type=submit] {
 }
 
 #splash h1, #splash-2 h1, #exploration h1{
-	font-size: 5em;
+	font-size: 4em;
+	/* margin-top: 10px; */
 	color: white;
 	text-shadow: 2px 2px 4px #000000;
 }
@@ -82,11 +83,11 @@ button[type=submit] {
 }
 #map {
 	width: 50%;
-	height: 80%;
+	height: 85%;
 	overflow: auto;
 	z-index: 0;
 	border: 10px solid #bac0c1;
-	border-radius: 5px;
+	border-radius: 10px;
 }
 
 #nearby-places {
@@ -110,7 +111,6 @@ li {
 	margin-left: 15px;
 }
 
-
 #pac-input.controls {
 	margin-top: 20px;
 	width: 400px;
@@ -123,14 +123,16 @@ li {
 #places {
 	background-color: aliceblue;
 	width: 20%;
+	height: 100%;
 	position: absolute;
-	top: 0;
-	right: 20%;
+	top: 85px;
+	right: 25%;
 	display: flex;
 	flex-wrap: wrap;
 	align-items: flex-start;
 	justify-content: space-evenly;
-	margin-top: 105px;
+	/* margin-top: 85px; */
+	overflow: hidden;
 }
 
 .place-card {
@@ -164,12 +166,13 @@ li {
 	top: 0;
 	right: 0;
 	margin-right: 50px;
-	margin-top: 105px;
+	margin-top: 85px;
 	height: 80%;
 	display: flex;
 	flex-wrap: wrap;
 	align-items: flex-start;
 	justify-content: space-evenly;
+	overflow: hidden;
 }
 
 #places form {
@@ -196,6 +199,9 @@ p.period {
 .dayDiv ul {
 	margin: 0;
 	padding: 0;
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
 }
 .dayDiv li {
 	margin-left: 25px;
@@ -214,13 +220,6 @@ p.period {
 .day {
 	font-weight: bold;
 }
-
-/* #drop-target {
-	border: 1px solid red;
-	width: 500px;
-	height: 500px;
-	background-color: bisque;
-} */
 
 #place-name {
 	font-weight: bold;
