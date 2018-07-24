@@ -64,36 +64,54 @@ function initMap() {
   getCity();
   map = new google.maps.Map(document.getElementById('map'), {
     center: cityCenter,
-    zoom: 12,
+    zoom: 13,
     gestureHandling: 'cooperative'
   });
 
-function getCity(){
-  $('#trip-form').submit(function(e){
-    e.preventDefault();
-    const selectedCity = $('select#city').find('option:selected').val();
-    setCenter(selectedCity);
-    $('#splash').fadeOut(600, function(){
-      $('#splash-2').fadeIn(600);
-      getArrival();
-    });
-  });
-}
+  showSplash();
 
-//------
-function setCenter(cityAbbrv){
-  cityCenters.forEach(function(element) {
-    if(element.city === cityAbbrv){
-      thisCity = element;
-      console.log(`thisCity is ${thisCity.name}`);
-      const Lat = element.center.lat;
-      const Lng = element.center.lng;
-      map.setCenter(element.center);
-      cityImg = `url('${element.img}')`;
-	    $('#splash-2').css("background-image", "" + cityImg );
-    }
-  });
-}
+  function showSplash(){
+    $('#intro1').fadeIn(1500, function(){
+      $('#intro1').fadeOut(1500, function(){
+        $('#intro2').fadeIn(1500, function(){
+          $('#intro2').fadeOut(1500, function(){
+            $('#intro3').fadeIn(1200, function(){
+              $('#intro3').fadeOut(1200, function(){
+                $('#intro4, #trip-form').fadeIn(1200);
+              });
+            });
+          });
+        });
+      });
+    });
+  }
+
+  function getCity(){
+    $('#trip-form').submit(function(e){
+      e.preventDefault();
+      const selectedCity = $('select#city').find('option:selected').val();
+      setCenter(selectedCity);
+      $('#splash').fadeOut(600, function(){
+        $('#splash-2').fadeIn(600);
+        getArrival();
+      });
+    });
+  }
+
+  //------
+  function setCenter(cityAbbrv){
+    cityCenters.forEach(function(element) {
+      if(element.city === cityAbbrv){
+        thisCity = element;
+        const Lat = element.center.lat;
+        const Lng = element.center.lng;
+        map.setCenter(element.center);
+        cityImg = `url('${element.img}')`;
+        $('.selected-city').html(`${thisCity.name}`);
+        $('#splash-2, #exploration').css("background-image", "" + cityImg );
+      }
+    });
+  }
 
 //User selects arrival date, handle date
 function getArrival(){
@@ -102,10 +120,21 @@ function getArrival(){
     const first = moment(new Date($('#arrive').val()));
     const offset = new Date().getTimezoneOffset();
     const firstDay = moment(first).add(offset, 'minutes');
+    const firstDate = moment(firstDay).format("ddd,ll");
+    $('#firstday').html(`${firstDate}`);
     createItinerary(firstDay);
-    $('#splash-2').fadeOut(600, function(){
-      $('#exploration').fadeIn(400);
+    $('#date-form, #splash2-2').fadeOut(600, function(){
+      $('#splash2-3').fadeIn(1600, function(){
+        $('#splash2-3').fadeOut(1600, function(){
+          $('#splash2-4').fadeIn(1200, function(){
+            $('#splash-2').fadeOut(1200, function(){
+              $('#exploration').fadeIn(400);
+            });
+          });
+        });
+      });
     });
+    
   });
 }
 
@@ -177,7 +206,7 @@ function placeSelection(map){
     if (!place.geometry) {
       return;
     }
-    console.log(place);
+    // console.log(place);
     let selected = new Place(place.name, place.formatted_address, place.place_id,
      place.formatted_phone_number, place.website, place.reviews, place.rating, place.price_level, place.vicinity);
     //push new place to places array
@@ -191,6 +220,7 @@ function placeSelection(map){
       myPlaces[0] = selected;
       setCoords(0);
       hotelSelected = true;
+      $('#pac-input').attr('placeholder', 'Enter place of interest');
     } 
     updatePlaces();
     ///clear the autocomplete input
@@ -221,7 +251,7 @@ function Place (name, address, placeID, phone, website, reviews, rating, price, 
 
 // 
 function updatePlaces(){
-  $('#places').html(`<h2>My Places in <span id="city">${thisCity.name} </span></h2>`).css('display', 'none');
+  // $('#places').html(`<h2>My Places in <span id="city">${thisCity.name} </span></h2>`).css('display', 'none');
   //Display hotel first,  Buttons and logic will be different.
   myPlaces.forEach(function(place, i){  //forEACH
     let placeNum = (i === 0)?'H': i;
@@ -293,12 +323,11 @@ function addPlaceListeners(index) {
       console.log('changing hotels');
       removeMarker(0);
       alert('find new hotel');
-      // myPlaces[0] = {};
+      $('#pac-input').attr('placeholder', 'Enter hotel');;
       hotelSelected = false;
     } else {
     //remove marker
       removeMarker(index);
-    // let removed = myPlaces.splice(`${index}`, 1);
       updatePlaces();
       placeIndex--;
     }
@@ -444,10 +473,10 @@ function addReturnListener(){
     $('#map, .explore, .return').fadeOut(400, function(){
       map.setCenter(thisCity.center);
       map.setZoom(12);
-      $('#map, .nearby, .delete').fadeIn(400);
+      $('#map, .nearby, .delete, .schedule').fadeIn(400);
       // $('#itinerary').fadeIn(400);
     });
-    clearNearbyMarkers();
+    // clearNearbyMarkers();
     updatePlaces();
   });
 }

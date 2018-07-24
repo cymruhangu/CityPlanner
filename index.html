@@ -12,39 +12,44 @@
   <main>
     <section id="splash" role="region">
       <div id="intro">
-        <span id="intro1"><h1>Five Days in the City</h1></span>
-        <span id="intro2"><h3>Plan and Visualize Your Visit</h3></span>
-        <span id="intro3"><h4>Select a City:</h4></span>
+        <h1 id="intro1">Five Days in the City</h1>
+        <h1 id="intro2">Plan and Visualize Your Visit</h1>
+        <h1 id="intro3">Create an Itinerary</h1>
+        <h1 id="intro4">Where do you want to explore?</h1>
         <form id="trip-form">
-          <label>Destination City:
-            <select id="city" size="1" required>
-              <option value="" disabled selected>Select your city</option>
-              <option value="NY">New York</option>
-              <option value="PHL">Philadelphia</option>
-              <option value="BSTN">Boston</option>
-              <option value="DC">Washington</option>
-              <option value="CHI">Chicago</option>
-              <option value="NOLA">New Orleans</option>
-              <option value="MTL">Montreal</option>
-              <option value="TO">Toronto</option>
-            </select>
-          </label> 
-          <button type="submit">Submit</button>    
+            <label><h2 id="city-select">Select a City:</h2>
+              <select id="city" size="1" required>
+                <option value="" disabled selected>Select your city</option>
+                <option value="NY">New York</option>
+                <option value="PHL">Philadelphia</option>
+                <option value="BSTN">Boston</option>
+                <option value="DC">Washington</option>
+                <option value="CHI">Chicago</option>
+                <option value="NOLA">New Orleans</option>
+                <option value="MTL">Montreal</option>
+                <option value="TO">Toronto</option>
+              </select>
+            </label> 
+          <button type="submit">Submit</button>  
+        </div>  
         </form>
       </div>
     </section>
     <section id="splash-2">
-      <h1 id="splash2-1">New York City</h1>
-      <h1 id="splash2-2">Select An Arrival Date</h1>
+      <h1 id="splash2-1">Explore <span class="selected-city">New York</span></h1>
+      <h2 id="splash2-2">Select Your First Day</h2>
       <form id="date-form">
-        <label for="arrive">Arrival:
+        <label for="arrive">
           <input type="date" id="arrive" required>
         </label>
         <button type="submit">Submit</button>
       </form>
+      <h1 id="splash2-3">Your first day is <span id="firstday"></span> </h1>
+      <h1 id="splash2-4">Next enter the hotel or address where you are staying.</h1>
     </section>
     <section id="exploration">
-      <input id="pac-input" class="controls" type="text" placeholder="Enter a location">
+      <h1 id="explore-h1">Explore <span class="selected-city"></span></h1>
+      <input id="pac-input" class="controls" type="text" placeholder="Enter Hotel">
       <div id="map"></div>
       <div id="nearby-places"><h2>Nearby Form</h2></div>
       <div id="places">
