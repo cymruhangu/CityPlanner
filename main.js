@@ -253,52 +253,56 @@ function Place (name, address, placeID, phone, website, reviews, rating, price, 
 function updatePlaces(){
   $('#places').html('').css('display', 'none');
   //Display hotel first,  Buttons and logic will be different.
-  myPlaces.forEach(function(place, i){  //forEACH
-    let placeNum = (i === 0)?'H': i;
-    let hideVal = (i ===0)?'hidden': '';
-    let delText = (i===0)?'change': 'delete';
-    $('#places').append( `
-        <div id="${place.placeID}" class="place-card">
-          <ul class="place-info:">
-            <li><span id="place-name">${placeNum}.&nbsp ${myPlaces[i].name}</span></li>
-            <li>${place.vicinity}</li>
-            <li>${place.phone}</li>
-            <li><a href="${place.url}" target="_blank">${place.web}</a></li>
-          </ul>
-          <div class="btn-container">
-            <button type="button" id="delete-${i}" class="delete">${delText}</button>
-            <button type="button" id="schedule-${i}" class="schedule" ${hideVal}>schedule</button>
-            <button type="button" id="unsched-${i}" class="unsched">unschedule</button>
-            <button type="button" id="explore-${i}" class="nearby">explore</button>
-            <button id="return-${i}" class="return" type="button">return</button>
-          </div>
-          <form id="sched-form-${i}">
-            <select id="day-time" size=1 required>
-              <option value="" disabled selected>choose day</option>
-              <option value="0">${moment(itinerary[0].date).format("ddd,ll")}</option>
-              <option value="1">${moment(itinerary[1].date).format("ddd,ll")}</option>
-              <option value="2">${moment(itinerary[2].date).format("ddd,ll")}</option>
-              <option value="3">${moment(itinerary[3].date).format("ddd,ll")}</option>
-              <option value="4">${moment(itinerary[4].date).format("ddd,ll")}</option>
-            </select>
-            <select id="period" size=1 required>
-              <option value="" disabled selected>time of day</option>
-              <option value="am">morning</option>
-              <option value="pm">afternoon</option>
-              <option value="eve">evening</option>
-            </select>
-            <input id="sched-btn-${i}" type="submit" value="submit">
-          </form>
-          <div id="nearbydiv-${i}" class="explore"></div>
-        </div>`);
-        //Ask Ali
-        //Why would I move these 2 function calls when I have i here?  
-        setButtonStatus(i);
-        addPlaceListeners(i);
+  myPlaces.forEach(function(place, i){  
+    //Refactor with these values inside string template????
+    const placeNum = (i === 0)?'H': i;
+    const hideVal = (i ===0)?'hidden': '';
+    const delText = (i===0)?'change': 'delete';
+    const placeHTML = renderPlacesHTML(i, place, placeNum, hideVal, delText);
+    $('#places').append(placeHTML);
+    setButtonStatus(i);
+    addPlaceListeners(i);
   });
   $('#places').fadeIn(600);
 }
-///---------
+
+//generate HTML for each place
+function renderPlacesHTML(i, place, placeNum, hideVal, delText){
+  return  `
+    <div id="${place.placeID}" class="place-card">
+    <ul class="place-info:">
+      <li><span id="place-name">${placeNum}.&nbsp ${myPlaces[i].name}</span></li>
+      <li>${place.vicinity}</li>
+      <li>${place.phone}</li>
+      <li><a href="${place.url}" target="_blank">${place.web}</a></li>
+    </ul>
+    <div class="btn-container">
+      <button type="button" id="delete-${i}" class="delete">${delText}</button>
+      <button type="button" id="schedule-${i}" class="schedule" ${hideVal}>schedule</button>
+      <button type="button" id="unsched-${i}" class="unsched">unschedule</button>
+      <button type="button" id="explore-${i}" class="nearby">explore</button>
+      <button id="return-${i}" class="return" type="button">return</button>
+    </div>
+    <form id="sched-form-${i}">
+      <select id="day-time" size=1 required>
+        <option value="" disabled selected>choose day</option>
+        <option value="0">${moment(itinerary[0].date).format("ddd,ll")}</option>
+        <option value="1">${moment(itinerary[1].date).format("ddd,ll")}</option>
+        <option value="2">${moment(itinerary[2].date).format("ddd,ll")}</option>
+        <option value="3">${moment(itinerary[3].date).format("ddd,ll")}</option>
+        <option value="4">${moment(itinerary[4].date).format("ddd,ll")}</option>
+      </select>
+      <select id="period" size=1 required>
+        <option value="" disabled selected>time of day</option>
+        <option value="am">morning</option>
+        <option value="pm">afternoon</option>
+        <option value="eve">evening</option>
+      </select>
+      <input id="sched-btn-${i}" type="submit" value="submit">
+    </form>
+    <div id="nearbydiv-${i}" class="explore"></div>
+  </div>`;
+}
 
 function setButtonStatus(index){  
   //CHAIN THESE ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -356,15 +360,12 @@ function changeHotel(){
 
 //Zoom in on place and reveal Nearby form underneath.
 function launchExplore(index){
-  $('#map').fadeOut(400, function(){
-    map.setCenter(myPlaces[index].LatLng);
+    map.panTo(myPlaces[index].LatLng);
     map.setZoom(16);
-    $('#map').fadeIn(400);
     $(`#delete-${index}, .nearby, #schedule-${index}`).fadeOut(400);
     $(`#return-${index}`).fadeIn(400);
     $(`#nearbydiv-${index}`).fadeIn(400);
     $(`#nearby-form-${index}`).fadeIn(400);
-  });
 //Places nearby or text search
 addReturnListener();
 //show form for Nearby Places and add listener
@@ -470,13 +471,11 @@ function getUrl(placeID, index){
 
 function addReturnListener(){
   $('.return').click(function(e){
-    $('#map, .explore, .return').fadeOut(400, function(){
-      map.setCenter(thisCity.center);
+    $('.explore, .return').fadeOut(400, function(){
+      map.panTo(thisCity.center);
       map.setZoom(12);
-      $('#map, .nearby, .delete, .schedule').fadeIn(400);
-      // $('#itinerary').fadeIn(400);
+      $('.nearby, .delete, .schedule').fadeIn(400);
     });
-    // clearNearbyMarkers();
     updatePlaces();
   });
 }

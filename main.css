@@ -49,11 +49,30 @@ button[type=submit] {
 	background-size: cover; 
 }
 
-#splash h1, #splash-2 h1, #exploration h1{
-	font-size: 4em;
-	/* margin-top: 10px; */
+#splash h1, h2, #splash-2 h1, #exploration h1{
+	font-size: 5em;
 	color: white;
 	text-shadow: 2px 2px 4px #000000;
+	background-color: rgba(147, 219, 249, 0.13);
+	border-radius: 30px;
+}
+
+#splash h1 {
+	width: 1100px;
+	margin: 0 auto;
+}
+
+#splash-2 h1, #splash-2 h2 {
+	width: 800px;
+	margin: 0 auto;
+}
+
+#exploration h1 {
+	position: relative;
+	top: 20px;
+	left: 300px;
+	margin-bottom: 30px; 
+	width: 800px;
 }
 
 #splash2-3, #splash2-4 {
@@ -121,22 +140,19 @@ li {
 }
 
 #places {
-	background-color: aliceblue;
+	background-color: rgba(147, 219, 249, 0.2);
 	width: 20%;
-	height: 100%;
+	height: 85%;
 	position: absolute;
-	top: 85px;
+	top: 125px;
 	right: 25%;
-	display: flex;
-	flex-wrap: wrap;
-	align-items: flex-start;
-	justify-content: space-evenly;
-	/* margin-top: 85px; */
-	overflow: hidden;
+
+	overflow: scroll;
+	border-radius: 10px;
+	border: 10px solid #bac0c1;
 }
 
 .place-card {
-	border: 1px solid black;
 	width: 100%;
 	display: block;
 	font-size: .75em;
@@ -146,11 +162,11 @@ li {
 	text-indent: 2em;
 }
 .place-card:nth-child(odd){
-	background-color:#ffe6cc;
+	background-color:#D4C1A9;
 }
 
 .place-card:nth-child(even){
-	background-color: #e1e1ea;
+	background-color: #FFA034;
 }
 
 .place-card ul, .place-card {
@@ -160,19 +176,21 @@ li {
 }
 
 #itinerary {
-	background-color: #5ec9ed;
+	background-color: #0480B2;
 	width: 20%;
 	position: absolute;
 	top: 0;
 	right: 0;
 	margin-right: 50px;
-	margin-top: 85px;
-	height: 80%;
+	margin-top: 125px;
+	height: 85%;
 	display: flex;
 	flex-wrap: wrap;
 	align-items: flex-start;
 	justify-content: space-evenly;
 	overflow: hidden;
+	border-radius: 10px;
+	border: 10px solid #bac0c1;
 }
 
 #places form {
