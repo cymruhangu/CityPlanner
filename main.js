@@ -18,7 +18,7 @@ const cityCenters = [
           img: "https://images.unsplash.com/photo-1520461589603-5158b75e6663?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=3a1c8ae9cb4345a4120d70540a5de145&auto=format&fit=crop&w=1952&q=80"
         },
         { city: "DC",
-          name: "Washington, DC",
+          name: "Washington DC",
           center: {lat: 38.9072, lng: -77.0369},
           img: "https://images.unsplash.com/photo-1522986949846-f63066ace3de?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=190cb0973909aaaa24cf678bcbb1d3b6&auto=format&fit=crop&w=1950&q=80"
         },
@@ -254,11 +254,7 @@ function updatePlaces(){
   $('#places').html('').css('display', 'none');
   //Display hotel first,  Buttons and logic will be different.
   myPlaces.forEach(function(place, i){  
-    //Refactor with these values inside string template????
-    const placeNum = (i === 0)?'H': i;
-    const hideVal = (i ===0)?'hidden': '';
-    const delText = (i===0)?'change': 'delete';
-    const placeHTML = renderPlacesHTML(i, place, placeNum, hideVal, delText);
+    const placeHTML = renderPlacesHTML(i, place);
     $('#places').append(placeHTML);
     setButtonStatus(i);
     addPlaceListeners(i);
@@ -267,23 +263,23 @@ function updatePlaces(){
 }
 
 //generate HTML for each place
-function renderPlacesHTML(i, place, placeNum, hideVal, delText){
+function renderPlacesHTML(i, place){
   return  `
     <div id="${place.placeID}" class="place-card">
     <ul class="place-info:">
-      <li><span id="place-name">${placeNum}.&nbsp ${myPlaces[i].name}</span></li>
+      <li><span id="place-name">${i === 0?'H':i}.&nbsp ${myPlaces[i].name}</span></li>
       <li>${place.vicinity}</li>
       <li>${place.phone}</li>
       <li><a href="${place.url}" target="_blank">${place.web}</a></li>
     </ul>
     <div class="btn-container">
-      <button type="button" id="delete-${i}" class="delete">${delText}</button>
-      <button type="button" id="schedule-${i}" class="schedule" ${hideVal}>schedule</button>
+      <button type="button" id="delete-${i}" class="delete">${i===0?'change':'delete'}</button>
+      <button type="button" id="schedule-${i}" class="schedule" ${i ===0?'hidden':''}>schedule</button>
       <button type="button" id="unsched-${i}" class="unsched">unschedule</button>
       <button type="button" id="explore-${i}" class="nearby">explore</button>
       <button id="return-${i}" class="return" type="button">return</button>
     </div>
-    <form id="sched-form-${i}">
+    <form id="sched-form-${i}" class="sched-form">
       <select id="day-time" size=1 required>
         <option value="" disabled selected>choose day</option>
         <option value="0">${moment(itinerary[0].date).format("ddd,ll")}</option>
@@ -362,7 +358,7 @@ function changeHotel(){
 function launchExplore(index){
     map.panTo(myPlaces[index].LatLng);
     map.setZoom(16);
-    $(`#delete-${index}, .nearby, #schedule-${index}`).fadeOut(400);
+    $(`#delete-${index}, #schedule-${index}`).fadeOut(400);
     $(`#return-${index}`).fadeIn(400);
     $(`#nearbydiv-${index}`).fadeIn(400);
     $(`#nearby-form-${index}`).fadeIn(400);
@@ -383,10 +379,9 @@ function showNearbyForm(index){
 }
 
 function createNearbyFormHTML(index){
-  return `<span class="nearby-title"><h6>What's near ${myPlaces[index].name}?</h6></span>
-          <form id="nearby-form-${index}">
+  return `<form id="nearby-form-${index}" class="nearby-form>
             <label for="nearby-${index}">Nearby places:</label>
-            <input type="text" onfocus="this.value=''" id="nearby-${index}"  required placeholder="ex - italian restaurant, museum, drug store">
+            <input type="text" onfocus="this.value=''" id="nearby-${index}"  required placeholder="eg italian restaurant, museum, drug store">
             <input id="nearby-btn-${index}" type="submit" value="submit">
             <button type="button" id="reset-${index}">Reset</button>
           </form>`;

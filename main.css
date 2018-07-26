@@ -72,7 +72,7 @@ button[type=submit] {
 	top: 20px;
 	left: 300px;
 	margin-bottom: 30px; 
-	width: 800px;
+	width: 850px;
 }
 
 #splash2-3, #splash2-4 {
@@ -176,7 +176,10 @@ li {
 }
 
 #itinerary {
-	background-color: #0480B2;
+	/* background-color: #0480B2; */
+	background-color: rgba(147, 219, 249, 0.2);
+	color: white;
+	text-shadow: 2px 2px 4px #000000;
 	width: 20%;
 	position: absolute;
 	top: 0;
@@ -184,16 +187,16 @@ li {
 	margin-right: 50px;
 	margin-top: 125px;
 	height: 85%;
-	display: flex;
-	flex-wrap: wrap;
-	align-items: flex-start;
-	justify-content: space-evenly;
 	overflow: hidden;
 	border-radius: 10px;
 	border: 10px solid #bac0c1;
 }
 
-#places form {
+#itinerary h2 {
+	text-align: center;
+}
+
+.sched-form, .nearby-form {
 	display: none;
 }
 
@@ -217,23 +220,21 @@ p.period {
 .dayDiv ul {
 	margin: 0;
 	padding: 0;
-	display: flex;
-	flex-direction: row;
-	flex-wrap: wrap;
 }
 .dayDiv li {
 	margin-left: 25px;
 	padding: 0;
-	font-size: 1em;
+	font-size: 0.75em;
 }
 .dayDiv{
 	display: block;
 	position: relative;
 	overflow: hidden;
 	width: 100%;
-	border: 1px solid black;
-	font-size: 0.9em;
-	
+	height: 20%;
+	border-top: 1px solid black;
+	font-size: 1.5em;
+	overflow: scroll;
 }
 .day {
 	font-weight: bold;
