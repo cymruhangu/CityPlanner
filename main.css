@@ -176,8 +176,8 @@ li {
 }
 
 #itinerary {
-	/* background-color: #0480B2; */
-	background-color: rgba(147, 219, 249, 0.2);
+	background-color: #0480B2;
+	/* background-color: rgba(147, 219, 249, 0.2); */
 	color: white;
 	text-shadow: 2px 2px 4px #000000;
 	width: 20%;

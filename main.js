@@ -1,47 +1,47 @@
 mySpace = function(){
 'use strict';
 const mapsAPIKey = 'AIzaSyBFyC3jDrzJK-9cl0wuWZonC-JpwP5Gaho';
-const cityCenters = [
-        { city: "NY",
+const cityCenters = {
+         "NY":{
           name: "New York",
           center: {lat: 40.7549, lng: -73.9840},
           img: "https://images.unsplash.com/photo-1482816928022-63fca0c422c9?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=d7b0250cda500d99737d49ad8e836778&auto=format&fit=crop&w=1950&q=80"
         },
-        { city: "PHL",
+        "PHL":{
           name: "Philadelphia",
           center: {lat: 39.9526, lng: -75.1652},
           img: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/Philadelphia_skyline_from_the_southwest_2015.jpg/1024px-Philadelphia_skyline_from_the_southwest_2015.jpg"
         },
-        { city: "BSTN",
+        "BSTN":{
           name: "Boston",
           center: {lat: 42.3601, lng: -71.0589},
           img: "https://images.unsplash.com/photo-1520461589603-5158b75e6663?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=3a1c8ae9cb4345a4120d70540a5de145&auto=format&fit=crop&w=1952&q=80"
         },
-        { city: "DC",
+        "DC":{
           name: "Washington DC",
           center: {lat: 38.9072, lng: -77.0369},
           img: "https://images.unsplash.com/photo-1522986949846-f63066ace3de?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=190cb0973909aaaa24cf678bcbb1d3b6&auto=format&fit=crop&w=1950&q=80"
         },
-        { city: "CHI",
+        "CHI":{
           name: "Chicago",
           center: {lat: 41.8781, lng: -87.6298},
           img: "https://images.unsplash.com/photo-1422393462206-207b0fbd8d6b?ixlib=rb-0.3.5&s=b06c1fb67e23344ffc685dccbd6e78d8&auto=format&fit=crop&w=1950&q=80"
         },
-        { city: "NOLA",
+        "NOLA": {
           name: "New Orleans",
           center: {lat: 29.9511, lng: -90.0715},
           img: "https://images.unsplash.com/photo-1484972759836-b93f9ef2b293?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=7d67b595c38bb2dfe8860ac03ea00d5f&auto=format&fit=crop&w=1950&q=80"
         },
-        { city: "MTL",
+        "MTL":{
           name: "Montreal",
           center: {lat: 45.5017, lng: -73.5673},
           img: "https://images.unsplash.com/photo-1519178614-68673b201f36?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=d1c6e96be62531ec1249e3e921d0c035&auto=format&fit=crop&w=1568&q=80"
         },
-        { city: "TO",
+        "TO": {
           name: "Toronto",
           center: {lat: 43.6532 , lng: -79.3832},
           img: "https://images.unsplash.com/photo-1507992781348-310259076fe0?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=06a49e44e78b412a8a23133bdda14e37&auto=format&fit=crop&w=1950&q=80"}
-];
+      };
 
 let map = null;
 let marker = null;
@@ -100,18 +100,15 @@ function initMap() {
 
   //------
   function setCenter(cityAbbrv){
-    cityCenters.forEach(function(element) {
-      if(element.city === cityAbbrv){
-        thisCity = element;
-        const Lat = element.center.lat;
-        const Lng = element.center.lng;
-        map.setCenter(element.center);
-        cityImg = `url('${element.img}')`;
-        $('.selected-city').html(`${thisCity.name}`);
+    thisCity = cityCenters[cityAbbrv];
+    console.log(`cityCenters ${cityCenters}`);
+    console.log(`cityAbbr ${cityAbbrv}`);
+        map.setCenter(cityCenters[cityAbbrv].center);
+        cityImg = `url('${cityCenters[cityAbbrv].img}')`;
+        $('.selected-city').html(`${cityCenters[cityAbbrv].name}`);
         $('#splash-2, #exploration').css("background-image", "" + cityImg );
       }
-    });
-  }
+  
 
 //User selects arrival date, handle date
 function getArrival(){
