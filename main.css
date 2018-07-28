@@ -156,17 +156,20 @@ li {
 	width: 100%;
 	display: block;
 	font-size: .75em;
+	color: white;
+	text-shadow: 2px 2px 4px #000000;
+	font-size: 1em;
 }
 
 .place-card li:nth-child(n+2){
 	text-indent: 2em;
 }
 .place-card:nth-child(odd){
-	background-color:#D4C1A9;
+	background-color:#6f747a;
 }
 
 .place-card:nth-child(even){
-	background-color: #FFA034;
+	background-color:#abaeb2;
 }
 
 .place-card ul, .place-card {
