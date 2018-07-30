@@ -105,11 +105,11 @@ button[type=submit] {
 	height: 85%;
 	overflow: auto;
 	z-index: 0;
-	border: 10px solid #bac0c1;
+	border: 7px solid #bac0c1;
 	border-radius: 10px;
 }
 
-#nearby-places {
+/* #nearby-places {
 	display: none;
 	background-color:#e0caa8;
 	width: 20%;
@@ -117,7 +117,8 @@ button[type=submit] {
 	top: 0;
 	right: 0;
 	margin-bottom: 50px;
-}
+} */
+
 
 #place-input {
 	width: 100px;
@@ -146,13 +147,26 @@ li {
 	position: absolute;
 	top: 125px;
 	right: 25%;
-
 	overflow: scroll;
 	border-radius: 10px;
-	border: 10px solid #bac0c1;
+	/* border: 10px solid #bac0c1; */
 }
 
-.place-card {
+.fa-search-plus{
+	color: blue;
+}
+
+.fa-trash-alt, .fa-search-plus{
+	font-size: 1.2em;
+}
+#places h2 {
+	color: white;
+	background-color: #737477;
+	border-radius: 0px;
+	margin: 0 auto;
+	text-align: center;
+}
+.wrap-collapsible {
 	width: 100%;
 	display: block;
 	font-size: .75em;
@@ -161,21 +175,8 @@ li {
 	font-size: 1em;
 }
 
-.place-card li:nth-child(n+2){
-	text-indent: 2em;
-}
-.place-card:nth-child(odd){
-	background-color:#6f747a;
-}
-
-.place-card:nth-child(even){
-	background-color:#abaeb2;
-}
-
-.place-card ul, .place-card {
-	margin-left: 0;
-	padding: 0;
-	margin-bottom: 0;
+.wrap-collapsible{
+	background-color:#737477;
 }
 
 #itinerary {
@@ -192,7 +193,7 @@ li {
 	height: 85%;
 	overflow: hidden;
 	border-radius: 10px;
-	border: 10px solid #bac0c1;
+	/* border: 10px solid #bac0c1; */
 }
 
 #itinerary h2 {
@@ -234,8 +235,8 @@ p.period {
 	position: relative;
 	overflow: hidden;
 	width: 100%;
-	height: 20%;
-	border-top: 1px solid black;
+	height: 18.5%;
+	border-top: 1px solid white;
 	font-size: 1.5em;
 	overflow: scroll;
 }
@@ -248,15 +249,19 @@ p.period {
 }
 
 .dayDiv h5 {
-	text-align: left;
+	text-align: center;
 }
 
+ .day{
+	text-align: center;
+	width: 100%;
+}
 .btn-container {
 	text-align: center;
 	padding: 3px 0px;
 }
 
-.place-card button {
+.wrap-collapsible button {
 	border-radius: 10px;
 }
 .delete {
@@ -264,10 +269,150 @@ p.period {
 	background-color: #ef454e;
 }
 
-.schedule {
+/* .schedule {
 	background-color: aquamarine;
-}
+} */
 
 #modal{
 	display: none;
+}
+
+#final-itinerary {
+	display: none;
+	background-color: #8ba3ad;
+	width: 40%;
+	height: 85%;
+	position: absolute;
+	top: 0;
+	right: 0;
+	margin-right: 50px;
+	margin-top: 125px;
+	height: 85%;
+	overflow: hidden;
+	border-radius: 10px;
+	overflow: scroll;
+}
+
+/* Expand/collapse CSS */
+input[type='checkbox'] {
+	display: none;
+  }
+  
+  .lbl-toggle {
+	display: block;
+  
+	font-weight: normal;
+	font-family: monospace;
+	font-size: 1.5rem;
+	text-transform: uppercase;
+	margin-bottom: 0;
+  
+	padding: 1rem;
+  
+	color: white;
+	background: #bac0c1;
+  
+	cursor: pointer;
+  
+	transition: all 0.25s ease-out;
+  }
+  
+  .lbl-toggle:hover {
+	color: rgb(191, 190, 231);
+  }
+  .lbl-toggle::before {
+	content: ' ';
+	display: inline-block;
+  
+	border-top: 5px solid transparent;
+	border-bottom: 5px solid transparent;
+	border-left: 5px solid currentColor;
+  
+	vertical-align: middle;
+	margin-right: .7rem;
+	transform: translateY(-2px);
+  
+	transition: transform .2s ease-out;
+  }
+  
+  .collapsible-content .content-inner {
+	/* background: rgba(250, 224, 66, .2);
+	border-bottom: 1px solid rgba(250, 224, 66, .45); */
+  
+	padding: .5rem 1rem;
+  }
+  
+  .collapsible-content {
+	max-height: 0px;
+	overflow: hidden;
+  
+	transition: max-height .25s ease-in-out;
+  }
+  
+  .toggle:checked + .lbl-toggle + .collapsible-content {
+	max-height: 350px;
+  }
+  
+  .toggle:checked + .lbl-toggle::before {
+	transform: rotate(90deg) translateX(-3px);
+  }
+  
+  .toggle:checked + .lbl-toggle {
+	border-bottom-right-radius: 0;
+	border-bottom-left-radius: 0;
+  }
+  
+  .address ul{
+	margin-left: 0;
+	margin-top: 0;
+	padding: 0px 20px;
+  }
+  li {
+	list-style-type: none;
+  }
+
+  /* Tooltip styles */
+  /* Tooltip container */
+.tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+/* Tooltip text */
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 65px;
+    background-color: #cbcdd8;
+    color: black;
+    text-align: center;
+    font-size: 0.5em;
+    padding: 5px 0;
+    border-radius: 6px;
+
+    /* Position the tooltip text */
+    position: absolute;
+    z-index: 1;
+    bottom: 60%;
+    left: 60%;
+    margin-left: -60px;
+
+    /* Fade in tooltip */
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.tooltip .tooltiptext::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #cbcdd8 transparent transparent transparent;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
 }

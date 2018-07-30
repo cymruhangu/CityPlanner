@@ -47,7 +47,7 @@ let map = null;
 let marker = null;
 const myPlaces = [];
 const markers = [];
-let markersModal = [];
+let markersNearby = [];
 let placeIndex = 0; 
 let thisCity = {};
 const cityCenter = {lat: 40.7829, lng: -73.9654};
@@ -101,13 +101,11 @@ function initMap() {
   //------
   function setCenter(cityAbbrv){
     thisCity = cityCenters[cityAbbrv];
-    console.log(`cityCenters ${cityCenters}`);
-    console.log(`cityAbbr ${cityAbbrv}`);
-        map.setCenter(cityCenters[cityAbbrv].center);
-        cityImg = `url('${cityCenters[cityAbbrv].img}')`;
-        $('.selected-city').html(`${cityCenters[cityAbbrv].name}`);
-        $('#splash-2, #exploration').css("background-image", "" + cityImg );
-      }
+    map.setCenter(cityCenters[cityAbbrv].center);
+    cityImg = `url('${cityCenters[cityAbbrv].img}')`;
+    $('.selected-city').html(`${cityCenters[cityAbbrv].name}`);
+    $('#splash-2, #exploration').css("background-image", "" + cityImg );
+  }
   
 
 //User selects arrival date, handle date
@@ -156,34 +154,31 @@ function createItinerary(firstDay){
 
 function updateSchedule(){
   $('#itinerary').html('<h2>Itinerary:</h2>');
-  for(let i = 0; i<itinerary.length; i++){ //forEach refactor
+  itinerary.forEach(function(day, i){  //forEach refactor
     let dateCard = `
       <div id="day${i}" class="dayDiv">
-        <span class="day">${moment(itinerary[i].date).format("ddd,ll")}:</span>`;
+        <p class="day">${moment(itinerary[i].date).format("ddd,ll")}:</p>`;
     //forEach through events
     dateCard+=`
-        <p class="period">AM:</p>
         <ul class="am">`;
     itinerary[i].places.am.forEach(function(e){
-      dateCard+=`<li>${e}</li>`;
+      dateCard+=`<li>AM: ${e}</li>`;
     });
     dateCard+=`</ul> 
-        <p class="period">PM:</p>
         <ul class="pm">`;
     itinerary[i].places.pm.forEach(function(e){
-      dateCard+=`<li>${e}</li>`;
+      dateCard+=`<li>PM: ${e}</li>`;
     });
     dateCard+=`</ul>
-        <p class="period">Night:</p>
         <ul class="night">`;
     itinerary[i].places.eve.forEach(function(e){
-      dateCard+=`<li>${e}</li>`;
+      dateCard+=`<li>EVE: ${e}</li>`;
     });
     dateCard+= `</ul>
       </div>`;
     $('#itinerary').append(dateCard);
   }
-}
+  );}
 
 //The first autocomplete instance is always bound to the same map.
 placeSelection(map);
@@ -203,17 +198,14 @@ function placeSelection(map){
     if (!place.geometry) {
       return;
     }
-    // console.log(place);
     let selected = new Place(place.name, place.formatted_address, place.place_id,
      place.formatted_phone_number, place.website, place.reviews, place.rating, place.price_level, place.vicinity);
     //push new place to places array
     if(hotelSelected){
-        myPlaces.push(selected);
-        placeIndex++;
-        //set the coords for new place object
-        setCoords(placeIndex);
+      myPlaces.push(selected);
+      placeIndex++;
+      setCoords(placeIndex);
     }else {
-      console.log("Selecting hotel");
       myPlaces[0] = selected;
       setCoords(0);
       hotelSelected = true;
@@ -230,7 +222,6 @@ function Place (name, address, placeID, phone, website, reviews, rating, price, 
   this.name = name;
   this.address = address;
   this.placeID = placeID;
-  console.log(`name =${this.name} placeID = ${this.placeID}`);
   this.phone = phone;
   this.url = website;
   if(this.url){
@@ -249,9 +240,13 @@ function Place (name, address, placeID, phone, website, reviews, rating, price, 
 // 
 function updatePlaces(){
   $('#places').html('').css('display', 'none');
-  //Display hotel first,  Buttons and logic will be different.
+  $('#places').html('<h2>Places to See:</h2>');
+  
   myPlaces.forEach(function(place, i){  
-    const placeHTML = renderPlacesHTML(i, place);
+    if(place.name === undefined){
+      return;
+    }
+    const placeHTML = renderPlacesHTML(place, i);
     $('#places').append(placeHTML);
     setButtonStatus(i);
     addPlaceListeners(i);
@@ -260,41 +255,45 @@ function updatePlaces(){
 }
 
 //generate HTML for each place
-function renderPlacesHTML(i, place){
+function renderPlacesHTML(place,i){
   return  `
-    <div id="${place.placeID}" class="place-card">
-    <ul class="place-info:">
-      <li><span id="place-name">${i === 0?'H':i}.&nbsp ${myPlaces[i].name}</span></li>
-      <li>${place.vicinity}</li>
-      <li>${place.phone}</li>
-      <li><a href="${place.url}" target="_blank">${place.web}</a></li>
-    </ul>
-    <div class="btn-container">
-      <button type="button" id="delete-${i}" class="delete">${i===0?'change':'delete'}</button>
-      <button type="button" id="schedule-${i}" class="schedule" ${i ===0?'hidden':''}>schedule</button>
-      <button type="button" id="unsched-${i}" class="unsched">unschedule</button>
-      <button type="button" id="explore-${i}" class="nearby">explore</button>
-      <button id="return-${i}" class="return" type="button">return</button>
-    </div>
-    <form id="sched-form-${i}" class="sched-form">
-      <select id="day-time" size=1 required>
-        <option value="" disabled selected>choose day</option>
-        <option value="0">${moment(itinerary[0].date).format("ddd,ll")}</option>
-        <option value="1">${moment(itinerary[1].date).format("ddd,ll")}</option>
-        <option value="2">${moment(itinerary[2].date).format("ddd,ll")}</option>
-        <option value="3">${moment(itinerary[3].date).format("ddd,ll")}</option>
-        <option value="4">${moment(itinerary[4].date).format("ddd,ll")}</option>
-      </select>
-      <select id="period" size=1 required>
-        <option value="" disabled selected>time of day</option>
-        <option value="am">morning</option>
-        <option value="pm">afternoon</option>
-        <option value="eve">evening</option>
-      </select>
-      <input id="sched-btn-${i}" type="submit" value="submit">
-    </form>
-    <div id="nearbydiv-${i}" class="explore"></div>
-  </div>`;
+    <div id="wrap-collapsible-${i}" class="wrap-collapsible">
+        <input id="collapsible-${i}" class="toggle" type="checkbox">
+        <label for="collapsible-${i}" class="lbl-toggle">${i === 0?'H':i}. ${myPlaces[i].name}</label>
+        <div class="collapsible-content">
+          <ul class="place-info:">
+            <li>${place.vicinity!==undefined?place.vicinity:''}</li>
+            <li>${place.phone !==undefined?place.phone:''}</li>
+            <li><a href="${place.url}" target="_blank">${place.url !==undefined?place.web:''}</a></li>
+          </ul>
+          <div class="btn-container">
+            <button type="button" id="delete-${i}" class="delete">${i===0?'change':'<i class="fas fa-trash-alt"></i>'}</button>
+            <button type="button" id="schedule-${i}" class="schedule" ${i ===0?'hidden':''}>schedule</button>
+            <button type="button" id="unsched-${i}" class="unsched">unschedule</button>
+            <button type="button" id="explore-${i}" class="explore"><i class="fas fa-search-plus"></i></button>
+            <button id="return-${i}" class="return" type="button">return</button>
+          </div>
+          <form id="sched-form-${i}" class="sched-form">
+            <select id="day-time" size=1 required>
+              <option value="" disabled selected>choose day</option>
+              <option value="0">${moment(itinerary[0].date).format("ddd,ll")}</option>
+              <option value="1">${moment(itinerary[1].date).format("ddd,ll")}</option>
+              <option value="2">${moment(itinerary[2].date).format("ddd,ll")}</option>
+              <option value="3">${moment(itinerary[3].date).format("ddd,ll")}</option>
+              <option value="4">${moment(itinerary[4].date).format("ddd,ll")}</option>
+            </select>
+            <select id="period" size=1 required>
+              <option value="" disabled selected>time of day</option>
+              <option value="am">morning</option>
+              <option value="pm">afternoon</option>
+              <option value="eve">evening</option>
+            </select>
+            <input id="sched-btn-${i}" type="submit" value="submit">
+          </form>
+          <div id="nearbydiv-${i}" class="nearbydiv"></div>
+        </div>
+      </div>
+    </div>`;
 }
 
 function setButtonStatus(index){  
@@ -317,7 +316,6 @@ function addPlaceListeners(index) {
     e.preventDefault();
     //if index = 0, call change hotel
     if(index === 0){
-      console.log('changing hotels');
       removeMarker(0);
       alert('find new hotel');
       $('#pac-input').attr('placeholder', 'Enter hotel');;
@@ -325,8 +323,8 @@ function addPlaceListeners(index) {
     } else {
     //remove marker
       removeMarker(index);
+      myPlaces[index]={};
       updatePlaces();
-      placeIndex--;
     }
   });
 
@@ -346,30 +344,21 @@ function addPlaceListeners(index) {
   });
 }
 
-function changeHotel(){
-  alert("Search for your new hotel name:");
-  //insert in myPlace[0];
-}
-
 //Zoom in on place and reveal Nearby form underneath.
 function launchExplore(index){
     map.panTo(myPlaces[index].LatLng);
     map.setZoom(16);
-    $(`#delete-${index}, #schedule-${index}`).fadeOut(400);
-    $(`#return-${index}`).fadeIn(400);
-    $(`#nearbydiv-${index}`).fadeIn(400);
-    $(`#nearby-form-${index}`).fadeIn(400);
+    $(`#delete-${index}, #schedule-${index}, #explore-${index}`).fadeOut(400);
+    $(`#return-${index}, #nearbydiv-${index}, #nearby-form-${index}`).fadeIn(400);
 //Places nearby or text search
 addReturnListener();
-//show form for Nearby Places and add listener
+
 showNearbyForm(index);
-//disable/hide explore ******************************************
 }
 
-//create HTML 
+//show form for Nearby Places and add listener
 function showNearbyForm(index){ 
   let nearyFormStr = createNearbyFormHTML(index);
-  console.log(nearyFormStr);
   $(`#nearbydiv-${index}`).append(nearyFormStr);
   addNearbyListener(index);
   addResetListener(index);
@@ -388,34 +377,35 @@ function addNearbyListener(index){
   $(`#nearby-btn-${index}`).click(function(e){
     e.preventDefault();
     let searchTerm = $(`#nearby-${index}`).val();
-    console.log(`searchTerm is ${searchTerm}`);
     findNearby(index, searchTerm);
   });
 }
 
 function findNearby(index, searchTerm){
-  let stuff = new google.maps.LatLng(myPlaces[index].LatLng);
+  let nearbyCtr = new google.maps.LatLng(myPlaces[index].LatLng);
   let service = new google.maps.places.PlacesService(map);
   service.textSearch({
-    location: stuff,
+    location: nearbyCtr,
     radius: 0,
     query: searchTerm
   }, callback);
 }
 
 function addResetListener(index){
-  $(`#reset-${index}`).click(function(e){
-    markersModal.forEach(function(element){
-      element.setMap(null);
-    });
-    markersModal= [];
-    tempPlaces = [];
+  $(`#reset-${index}`).click(function(){
+    removeNearbyMarkers();
  });
 }
 
+function removeNearbyMarkers(){
+  markersNearby.forEach(function(element){
+    element.setMap(null);
+  });
+  markersNearby= [];
+  tempPlaces = [];
+}
+
 function callback(results, status){
-  console.log(status);
-  console.log(results);
   if (status == google.maps.places.PlacesServiceStatus.OK) {
     for (let i = 0; i < results.length; i++) {
       let place = results[i];
@@ -426,13 +416,14 @@ function callback(results, status){
   }
 }
 
+//create nearby marker
 function createMarker(place, index) {
-  let placeLoc = place.geometry.location;
+  // let nearbyPlace = place.geometry.location;
   let marker = new google.maps.Marker({
     map: map,
     position: place.geometry.location
   });
-  markersModal.push(marker);
+  markersNearby.push(marker);
   let infowindow = new google.maps.InfoWindow();
   google.maps.event.addListener(marker, 'click', function() {  //MAYBE REFACTOR INTO SEPARATE FUNCTION
     let contentStr =`${place.name}<br>
@@ -466,8 +457,9 @@ function addReturnListener(){
     $('.explore, .return').fadeOut(400, function(){
       map.panTo(thisCity.center);
       map.setZoom(12);
-      $('.nearby, .delete, .schedule').fadeIn(400);
+      $('.nearby, .delete').fadeIn(400);
     });
+    removeNearbyMarkers();
     updatePlaces();
   });
 }
@@ -477,7 +469,6 @@ function addSchedListener(index){
     e.preventDefault();
     let date = $(`#sched-form-${index} select#day-time`).find('option:selected').val();
     let period = $(`#sched-form-${index} select#period`).find('option:selected').val();
-    console.log(`period is ${period}`);
     
     //set schedule
     let thisPlace = myPlaces[index].name;
@@ -498,6 +489,7 @@ function addSchedListener(index){
 
 function addUnschedListener(index){
   $(`#unsched-${index}`).click(function(e){
+    console.log(`#unsched-${index} clicked`);
     myPlaces[index].scheduled = false;
     //find which day/time scheduled
     let dayTime = findDayTime(index);
@@ -529,6 +521,7 @@ function findDayTime(index) {
   return [day, time];
 }
 
+//remove main view marker
 function removeMarker(index){
   console.log(`myPlaces[i].name is ${myPlaces[index].name}`);
   let marker = myPlaces[index].name;
@@ -559,14 +552,13 @@ function setCoords(index){
 }
 
 function addMarker(index){
-  // console.log(`adding marker for ${index}`);
   let label = '';
   let id = '';
+  //refactor as ternary
   if(index === 0){
     label = 'H'; 
   } else {
     label = `${index}`;
-    console.log(`adding marker for ${index}`);
   }
   let marker = new google.maps.Marker({
     position: myPlaces[index].LatLng,
