@@ -75,7 +75,7 @@ button[type=submit] {
 	width: 850px;
 }
 
-#splash2-3, #splash2-4 {
+#splash2-3, #splash2-4, #splash2-5, #splash2-6, #splash2-7 {
 	display: none;
 }
 
@@ -109,16 +109,9 @@ button[type=submit] {
 	border-radius: 10px;
 }
 
-/* #nearby-places {
-	display: none;
-	background-color:#e0caa8;
-	width: 20%;
-	position: absolute;
-	top: 0;
-	right: 0;
-	margin-bottom: 50px;
-} */
-
+.sched-form {
+	text-align: center;
+}
 
 #place-input {
 	width: 100px;
@@ -149,7 +142,6 @@ li {
 	right: 25%;
 	overflow: scroll;
 	border-radius: 10px;
-	/* border: 10px solid #bac0c1; */
 }
 
 .fa-search-plus{
@@ -208,6 +200,9 @@ li {
 	display: none;
 }
 
+button .reset {
+	text-align: center;
+}
 button .return {
 	display: none;
 }
@@ -416,3 +411,11 @@ input[type='checkbox'] {
     visibility: visible;
     opacity: 1;
 }
+
+/* Break at 1380
+- Change font size
+- center h1
+ */
+
+ /* Doesn't take up whole screen of ipad, iphone */
+ /* iPad pro */

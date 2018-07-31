@@ -51,7 +51,7 @@ let markersNearby = [];
 let placeIndex = 0; 
 let thisCity = {};
 const cityCenter = {lat: 40.7829, lng: -73.9654};
-const placeCoords = {lat: 40.7829, lng: -73.9654};
+// const placeCoords = {lat: 40.7829, lng: -73.9654};
 let cityImg ="";
 let itinerary =[];
 let tempPlaces = [];
@@ -60,6 +60,7 @@ let hotelSelected = false;
 let today = new Date().toISOString().split('T')[0];
 $('#arrive').attr('min', today);
 
+//function called by Google maps API call index.html
 function initMap() {
   getCity();
   map = new google.maps.Map(document.getElementById('map'), {
@@ -70,6 +71,7 @@ function initMap() {
 
   showSplash();
 
+  //reveal splash page and city select form
   function showSplash(){
     $('#intro1').fadeIn(1500, function(){
       $('#intro1').fadeOut(1500, function(){
@@ -86,6 +88,7 @@ function initMap() {
     });
   }
 
+  //Add listener for the city selection form. Get value from form.
   function getCity(){
     $('#trip-form').submit(function(e){
       e.preventDefault();
@@ -98,7 +101,7 @@ function initMap() {
     });
   }
 
-  //------
+  //Set the center of the map based on city selected
   function setCenter(cityAbbrv){
     thisCity = cityCenters[cityAbbrv];
     map.setCenter(cityCenters[cityAbbrv].center);
@@ -118,21 +121,34 @@ function getArrival(){
     const firstDate = moment(firstDay).format("ddd,ll");
     $('#firstday').html(`${firstDate}`);
     createItinerary(firstDay);
-    $('#date-form, #splash2-2').fadeOut(600, function(){
-      $('#splash2-3').fadeIn(1600, function(){
-        $('#splash2-3').fadeOut(1600, function(){
-          $('#splash2-4').fadeIn(1200, function(){
-            $('#splash-2').fadeOut(1200, function(){
-              $('#exploration').fadeIn(400);
-            });
+    revealSplash2();
+  });
+} 
+
+//reveal 2nd splash page
+function revealSplash2(){
+$('#date-form, #splash2-2').fadeOut(900, function(){
+      $('#splash2-3').fadeIn(900, function(){
+        $('#splash2-3').fadeOut(900, function(){
+          $('#splash2-4, #splash2-5').fadeIn(1400, function(){
+            $('#splash2-4, #splash2-5').fadeOut(1400, function(){
+              $('#splash2-6').fadeIn(1200, function(){
+                $('#splash2-6').fadeOut(1200, function(){
+                  $('#splash2-7').fadeIn(900, function(){
+                    $('#splash-2').fadeOut(1600, function(){
+                      $('#exploration').fadeIn(600);
+                    });
+                  });
+                });
+              });
+            });    
           });
         });
       });
     });
-    
-  });
-}
+  }
 
+//create the 5 day itinerary array of day objects
 function createItinerary(firstDay){
   const numDays = 5;
    //create object with date and array of places
@@ -152,6 +168,7 @@ function createItinerary(firstDay){
   updateSchedule();
 }
 
+//Create the html for #itinerary
 function updateSchedule(){
   $('#itinerary').html('<h2>Itinerary:</h2>');
   itinerary.forEach(function(day, i){  //forEach refactor
@@ -162,17 +179,17 @@ function updateSchedule(){
     dateCard+=`
         <ul class="am">`;
     itinerary[i].places.am.forEach(function(e){
-      dateCard+=`<li>AM: ${e}</li>`;
+      dateCard+=`<li>AM:     ${e}</li>`;
     });
     dateCard+=`</ul> 
         <ul class="pm">`;
     itinerary[i].places.pm.forEach(function(e){
-      dateCard+=`<li>PM: ${e}</li>`;
+      dateCard+=`<li>PM:   ${e}</li>`;
     });
     dateCard+=`</ul>
         <ul class="night">`;
     itinerary[i].places.eve.forEach(function(e){
-      dateCard+=`<li>EVE: ${e}</li>`;
+      dateCard+=`<li>EVE:   ${e}</li>`;
     });
     dateCard+= `</ul>
       </div>`;
@@ -180,7 +197,7 @@ function updateSchedule(){
   }
   );}
 
-//The first autocomplete instance is always bound to the same map.
+//call AC function
 placeSelection(map);
 
 //adds listener to AC input and calls google place,  creates place Object
@@ -216,8 +233,8 @@ function placeSelection(map){
     document.getElementById('pac-input').value = '';
   });
 }
-// }// end of initMap()
 
+//Place object constructor
 function Place (name, address, placeID, phone, website, reviews, rating, price, vicinity){
   this.name = name;
   this.address = address;
@@ -237,7 +254,7 @@ function Place (name, address, placeID, phone, website, reviews, rating, price, 
   this.schedDay = ["","","","",""];
 }
 
-// 
+//Update the places div from myPlaces array 
 function updatePlaces(){
   $('#places').html('').css('display', 'none');
   $('#places').html('<h2>Places to See:</h2>');
@@ -296,16 +313,15 @@ function renderPlacesHTML(place,i){
     </div>`;
 }
 
+
 function setButtonStatus(index){  
   //CHAIN THESE ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
   $('.return').css('display', 'none');
     if(myPlaces[index].scheduled){
-      $(`#schedule-${index}`).css('display', 'none');
-      $(`#delete-${index}`).css('display', 'none');
+      $(`#schedule-${index}, #delete-${index}`).css('display', 'none');
       $(`#unsched-${index}`).css('display', 'inline-block');
     } else {
-      $(`#schedule-${index}`).css('display', 'inline-block');
-      $(`#delete-${index}`).css('display', 'inline-block');
+      $(`#schedule-${index},#delete-${index} `).css('display', 'inline-block');
       $(`#unsched-${index}`).css('display', 'none');
     }
 }
@@ -346,14 +362,12 @@ function addPlaceListeners(index) {
 
 //Zoom in on place and reveal Nearby form underneath.
 function launchExplore(index){
-    map.panTo(myPlaces[index].LatLng);
-    map.setZoom(16);
-    $(`#delete-${index}, #schedule-${index}, #explore-${index}`).fadeOut(400);
-    $(`#return-${index}, #nearbydiv-${index}, #nearby-form-${index}`).fadeIn(400);
-//Places nearby or text search
-addReturnListener();
-
-showNearbyForm(index);
+  map.panTo(myPlaces[index].LatLng);
+  map.setZoom(16);
+  $(`#delete-${index}, #schedule-${index}, #explore-${index}`).fadeOut(400);
+  $(`#return-${index}, #nearbydiv-${index}, #nearby-form-${index}`).fadeIn(400);
+  addReturnListener();
+  showNearbyForm(index);
 }
 
 //show form for Nearby Places and add listener
@@ -369,10 +383,11 @@ function createNearbyFormHTML(index){
             <label for="nearby-${index}">Nearby places:</label>
             <input type="text" onfocus="this.value=''" id="nearby-${index}"  required placeholder="eg italian restaurant, museum, drug store">
             <input id="nearby-btn-${index}" type="submit" value="submit">
-            <button type="button" id="reset-${index}">Reset</button>
+            <button type="button" id="reset-${index}" class="reset">Reset</button>
           </form>`;
 }
 
+//adds listener gets search term
 function addNearbyListener(index){
   $(`#nearby-btn-${index}`).click(function(e){
     e.preventDefault();
@@ -381,6 +396,7 @@ function addNearbyListener(index){
   });
 }
 
+//call to google maps nearby service based on center coordinates
 function findNearby(index, searchTerm){
   let nearbyCtr = new google.maps.LatLng(myPlaces[index].LatLng);
   let service = new google.maps.places.PlacesService(map);
@@ -391,12 +407,14 @@ function findNearby(index, searchTerm){
   }, callback);
 }
 
+//adds reset listener
 function addResetListener(index){
   $(`#reset-${index}`).click(function(){
     removeNearbyMarkers();
  });
 }
 
+//clear nearby markers if reset clicked
 function removeNearbyMarkers(){
   markersNearby.forEach(function(element){
     element.setMap(null);
@@ -405,6 +423,7 @@ function removeNearbyMarkers(){
   tempPlaces = [];
 }
 
+//callback function from nearby service call
 function callback(results, status){
   if (status == google.maps.places.PlacesServiceStatus.OK) {
     for (let i = 0; i < results.length; i++) {
@@ -439,6 +458,7 @@ function createMarker(place, index) {
   });
 }
 
+//get the place's URL based on placeID
 function getUrl(placeID, index){
   let webAddress = '';
   let service = new google.maps.places.PlacesService(map);
@@ -452,6 +472,7 @@ function getUrl(placeID, index){
   });
 }
 
+//add listener to return the map from zoomed nearby state
 function addReturnListener(){
   $('.return').click(function(e){
     $('.explore, .return').fadeOut(400, function(){
@@ -463,6 +484,7 @@ function addReturnListener(){
     updatePlaces();
   });
 }
+
 
 function addSchedListener(index){
   $(`#sched-form-${index}`).submit(function(e){
