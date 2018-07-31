@@ -5,6 +5,7 @@
 body, main {
 	width: 100%;
 	height: 100%;
+	overflow: hidden;
 }
 
 #splash {
@@ -69,9 +70,9 @@ button[type=submit] {
 
 #exploration h1 {
 	position: relative;
-	top: 20px;
+	top: 15px;
 	left: 300px;
-	margin-bottom: 30px; 
+	margin-bottom: 15px; 
 	width: 850px;
 }
 
@@ -96,17 +97,18 @@ button[type=submit] {
 	background-repeat: no-repeat;
 	background-size: cover; 
 }
-#exploration h1, #map {
-	margin-left: 50px;
-	text-align: center;
-}
+
 #map {
 	width: 50%;
-	height: 85%;
+	height: 84%;
 	overflow: auto;
 	z-index: 0;
 	border: 7px solid #bac0c1;
 	border-radius: 10px;
+	margin-top: 0;
+	padding-top: 0;
+	margin-left: 50px;
+	text-align: center;
 }
 
 .sched-form {
@@ -136,9 +138,9 @@ li {
 #places {
 	background-color: rgba(147, 219, 249, 0.2);
 	width: 20%;
-	height: 85%;
+	height: 84%;
 	position: absolute;
-	top: 125px;
+	top: 111px;
 	right: 25%;
 	overflow: scroll;
 	border-radius: 10px;
@@ -181,11 +183,11 @@ li {
 	top: 0;
 	right: 0;
 	margin-right: 50px;
-	margin-top: 125px;
-	height: 85%;
+	margin-top: 111px;
+	height: 84%;
 	overflow: hidden;
 	border-radius: 10px;
-	/* border: 10px solid #bac0c1; */
+	overflow: scroll;
 }
 
 #itinerary h2 {
@@ -232,7 +234,7 @@ p.period {
 	width: 100%;
 	height: 18.5%;
 	border-top: 1px solid white;
-	font-size: 1.5em;
+	font-size: 1.2em;
 	overflow: scroll;
 }
 .day {
@@ -262,30 +264,6 @@ p.period {
 .delete {
 	color: white;
 	background-color: #ef454e;
-}
-
-/* .schedule {
-	background-color: aquamarine;
-} */
-
-#modal{
-	display: none;
-}
-
-#final-itinerary {
-	display: none;
-	background-color: #8ba3ad;
-	width: 40%;
-	height: 85%;
-	position: absolute;
-	top: 0;
-	right: 0;
-	margin-right: 50px;
-	margin-top: 125px;
-	height: 85%;
-	overflow: hidden;
-	border-radius: 10px;
-	overflow: scroll;
 }
 
 /* Expand/collapse CSS */
@@ -416,6 +394,25 @@ input[type='checkbox'] {
 - Change font size
 - center h1
  */
+ @media only screen and (max-width: 1380px) {
+	#exploration h1 {
+		margin: 0 auto;
+		font-size: 3em;
+		float: left;
+		left: 150px;
+		top: 0px;
+	} 
+	#itinerary h2, #places h2 {
+		font-size: 1.5em;
+	}
+	#places {
+		top: 60px;
+	}
+	#itinerary {
+		margin-top: 60px;
+	}
+ }
+
 
  /* Doesn't take up whole screen of ipad, iphone */
  /* iPad pro */

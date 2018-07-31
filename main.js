@@ -313,7 +313,6 @@ function renderPlacesHTML(place,i){
     </div>`;
 }
 
-
 function setButtonStatus(index){  
   //CHAIN THESE ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
   $('.return').css('display', 'none');
@@ -485,7 +484,8 @@ function addReturnListener(){
   });
 }
 
-
+//add schedule button listener & add place to itinerary
+//this function does too much - REFACTOR
 function addSchedListener(index){
   $(`#sched-form-${index}`).submit(function(e){
     e.preventDefault();
@@ -497,8 +497,6 @@ function addSchedListener(index){
     myPlaces[index].scheduled = true;
     myPlaces[index].schedDay[date] = period;
     addUnschedListener(index);
-    // This is a hack to get around putting the place in twice when
-    //scheduling after an unschedule runs. 
     if(!itinerary[date].places[period].includes(thisPlace)){
       itinerary[date].places[period].push(thisPlace);
     };
@@ -509,6 +507,8 @@ function addSchedListener(index){
   });
 }
 
+//unschedule Place
+//candidate for refactor
 function addUnschedListener(index){
   $(`#unsched-${index}`).click(function(e){
     console.log(`#unsched-${index} clicked`);
@@ -530,6 +530,8 @@ function addUnschedListener(index){
   });
 }
 
+//finds the Day and period a place is scheduled
+//REFACTOR
 function findDayTime(index) {
   let day = null;
   let time ="";
@@ -543,13 +545,13 @@ function findDayTime(index) {
   return [day, time];
 }
 
-//remove main view marker
+//remove place marker 
 function removeMarker(index){
-  console.log(`myPlaces[i].name is ${myPlaces[index].name}`);
   let marker = myPlaces[index].name;
   markers[index].setMap(null);
 }
 
+//Sets the Lat and Long of a new place in myPlaces
 function setCoords(index){
   $.ajax({
     url: "https://maps.googleapis.com/maps/api/geocode/json",
@@ -573,18 +575,14 @@ function setCoords(index){
   });
 }
 
+//Add a marker for a new place
 function addMarker(index){
-  let label = '';
+  // let label = '';
   let id = '';
-  //refactor as ternary
-  if(index === 0){
-    label = 'H'; 
-  } else {
-    label = `${index}`;
-  }
+  const label = index === 0 ? 'H': `${index}`;
   let marker = new google.maps.Marker({
     position: myPlaces[index].LatLng,
-    label: label,
+    label: {text: label, color: "yellow"},
     map:map,
     id: `${index}`
   });
