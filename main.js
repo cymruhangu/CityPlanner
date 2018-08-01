@@ -62,14 +62,12 @@ $('#arrive').attr('min', today);
 
 //function called by Google maps API call index.html
 function initMap() {
-  getCity();
+  handleCitySubmission();
   map = new google.maps.Map(document.getElementById('map'), {
     center: cityCenter,
     zoom: 12,
     gestureHandling: 'cooperative'
   });
-
-  showSplash();
 
   //reveal splash page and city select form
   function showSplash(){
@@ -89,15 +87,20 @@ function initMap() {
   }
 
   //Add listener for the city selection form. Get value from form.
-  function getCity(){
+  //handleCitySubmission
+  function handleCitySubmission(){
     $('#trip-form').submit(function(e){
       e.preventDefault();
       const selectedCity = $('select#city').find('option:selected').val();
       setCenter(selectedCity);
-      $('#splash').fadeOut(600, function(){
-        $('#splash-2').fadeIn(600);
-        getArrival();
-      });
+      showDatePicker();
+    });
+  }
+
+  function showDatePicker(){
+    $('#splash').fadeOut(600, function(){
+      $('#splash-2').fadeIn(600);
+      getArrival();
     });
   }
 
@@ -105,13 +108,17 @@ function initMap() {
   function setCenter(cityAbbrv){
     thisCity = cityCenters[cityAbbrv];
     map.setCenter(cityCenters[cityAbbrv].center);
+    setCityParms(cityAbbrv);
+  }
+  
+  function setCityParms(cityAbbrv){
     cityImg = `url('${cityCenters[cityAbbrv].img}')`;
     $('.selected-city').html(`${cityCenters[cityAbbrv].name}`);
     $('#splash-2, #exploration').css("background-image", "" + cityImg );
   }
-  
 
 //User selects arrival date, handle date
+//handleArrivalDateSubmission
 function getArrival(){
   $('#date-form').submit(function(e){
     e.preventDefault();
@@ -119,11 +126,15 @@ function getArrival(){
     const offset = new Date().getTimezoneOffset();
     const firstDay = moment(first).add(offset, 'minutes');
     const firstDate = moment(firstDay).format("ddd,ll");
-    $('#firstday').html(`${firstDate}`);
+    setDateHTML(firstDate);
     createItinerary(firstDay);
     revealSplash2();
   });
 } 
+
+function setDateHTML(firstDate){
+  $('#firstday').html(`${firstDate}`);
+}
 
 //reveal 2nd splash page
 function revealSplash2(){
@@ -155,9 +166,9 @@ function createItinerary(firstDay){
   for(let i = 0; i<numDays; i++){
     const newDate = moment(firstDay).add(i, 'days');
     const placesObj = {
-                        am: [],
-                        pm: [],
-                        eve: []
+      am: [],
+      pm: [],
+      eve: []
     };
     const newDay = {
       date: newDate, 
@@ -171,11 +182,11 @@ function createItinerary(firstDay){
 //Create the html for #itinerary
 function updateSchedule(){
   $('#itinerary').html('<h2>Itinerary:</h2>');
-  itinerary.forEach(function(day, i){  //forEach refactor
+  itinerary.forEach(function(day, i){ 
+    //below to different function
     let dateCard = `
       <div id="day${i}" class="dayDiv">
         <p class="day">${moment(itinerary[i].date).format("ddd,ll")}:</p>`;
-    //forEach through events
     dateCard+=`
         <ul class="am">`;
     itinerary[i].places.am.forEach(function(e){
@@ -217,7 +228,7 @@ function placeSelection(map){
     }
     let selected = new Place(place.name, place.formatted_address, place.place_id,
      place.formatted_phone_number, place.website, place.reviews, place.rating, place.price_level, place.vicinity);
-    //push new place to places array
+    //Below to new function
     if(hotelSelected){
       myPlaces.push(selected);
       placeIndex++;
@@ -272,6 +283,7 @@ function updatePlaces(){
 }
 
 //generate HTML for each place
+//generateHTML---
 function renderPlacesHTML(place,i){
   return  `
     <div id="wrap-collapsible-${i}" class="wrap-collapsible">
@@ -314,11 +326,12 @@ function renderPlacesHTML(place,i){
 }
 
 function setButtonStatus(index){  
-  //CHAIN THESE ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  //CHAIN THESE ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^split to differient functions DRY
   $('.return').css('display', 'none');
     if(myPlaces[index].scheduled){
       $(`#schedule-${index}, #delete-${index}`).css('display', 'none');
       $(`#unsched-${index}`).css('display', 'inline-block');
+      addUnschedListener(index);
     } else {
       $(`#schedule-${index},#delete-${index} `).css('display', 'inline-block');
       $(`#unsched-${index}`).css('display', 'none');
@@ -326,10 +339,12 @@ function setButtonStatus(index){
 }
 //---------
 // Should be 3 separate functions
+//not handling unschedule
+//bindEventListeners function 
 function addPlaceListeners(index) {
   $(`#delete-${index}`).click(function(e){
     e.preventDefault();
-    //if index = 0, call change hotel
+    //if index = 0, c
     if(index === 0){
       removeMarker(0);
       alert('find new hotel');
@@ -489,11 +504,11 @@ function addReturnListener(){
 function addSchedListener(index){
   $(`#sched-form-${index}`).submit(function(e){
     e.preventDefault();
-    let date = $(`#sched-form-${index} select#day-time`).find('option:selected').val();
-    let period = $(`#sched-form-${index} select#period`).find('option:selected').val();
+    const date = $(`#sched-form-${index} select#day-time`).find('option:selected').val();
+    const period = $(`#sched-form-${index} select#period`).find('option:selected').val();
     
     //set schedule
-    let thisPlace = myPlaces[index].name;
+    const thisPlace = myPlaces[index].name;
     myPlaces[index].scheduled = true;
     myPlaces[index].schedDay[date] = period;
     addUnschedListener(index);
@@ -514,12 +529,12 @@ function addUnschedListener(index){
     console.log(`#unsched-${index} clicked`);
     myPlaces[index].scheduled = false;
     //find which day/time scheduled
-    let dayTime = findDayTime(index);
-    let day = dayTime[0];
-    let time = dayTime[1];
-    let name = myPlaces[index].name;
+    const dayTime = findDayTime(index);
+    const day = dayTime[0];
+    const time = dayTime[1];
+    const name = myPlaces[index].name;
     //remove place from itinerary[day].places[time]
-    let x = itinerary[day].places[time].indexOf(name);
+    const x = itinerary[day].places[time].indexOf(name);
     //place empty string in myPlaces[index].schedDay
     itinerary[day].places[time].splice(x, 1);
     //hide unsched, reveal delete and sched
@@ -578,7 +593,7 @@ function setCoords(index){
 //Add a marker for a new place
 function addMarker(index){
   // let label = '';
-  let id = '';
+  // let id = '';
   const label = index === 0 ? 'H': `${index}`;
   let marker = new google.maps.Marker({
     position: myPlaces[index].LatLng,
@@ -601,7 +616,10 @@ function addMarker(index){
     infoWindow.open(map, marker);
   });
 }
+showSplash();
 }//new end of initMap
+
+
 //==========================
 return {initMap:initMap}
 }();

@@ -234,7 +234,7 @@ p.period {
 	width: 100%;
 	height: 18.5%;
 	border-top: 1px solid white;
-	font-size: 1.2em;
+	font-size: 1.5em;
 	overflow: scroll;
 }
 .day {
@@ -390,17 +390,18 @@ input[type='checkbox'] {
     opacity: 1;
 }
 
-/* Break at 1380
-- Change font size
-- center h1
- */
+
+/*macBook Pro */
  @media only screen and (max-width: 1380px) {
+	#intro h1 {
+		font-size: 4em;
+	}
 	#exploration h1 {
 		margin: 0 auto;
-		font-size: 3em;
 		float: left;
 		left: 150px;
 		top: 0px;
+		font-size: 3em;
 	} 
 	#itinerary h2, #places h2 {
 		font-size: 1.5em;
@@ -413,6 +414,33 @@ input[type='checkbox'] {
 	}
  }
 
-
- /* Doesn't take up whole screen of ipad, iphone */
- /* iPad pro */
+ /* iPad Pro */
+ @media only screen and (max-width: 1024px){
+	 #map {
+		 width: 90%;
+		 height: 50%;
+	 }
+	 #places {
+		width: 90%;
+		height: 20%;
+		position: absolute;
+		top: 50%;
+		left: 5%;;
+		background-color: #737477
+		text-align: center;
+		top: 64%;
+	 }
+	 #itinerary {
+		 display: block;
+		 left: 5%;
+		 width: 90%;
+		 height: 20%;
+		 overflow: scroll;
+		 position: relative;
+		 bottom: 
+		 margin: 0 auto;
+	 }
+	 #exploration {
+		 overflow: scroll;
+	 }
+ }
