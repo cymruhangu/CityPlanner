@@ -59,15 +59,18 @@ button[type=submit] {
 }
 
 #splash h1 {
-	width: 1100px;
+	width: 1000px;
 	margin: 0 auto;
 }
 
-#splash-2 h1, #splash-2 h2 {
+#splash-2 h1  {
 	width: 800px;
 	margin: 0 auto;
 }
-
+#splash-2 h2{
+	width: 600px;
+	margin: 0 auto;
+}
 #exploration h1 {
 	position: relative;
 	top: 15px;
@@ -138,7 +141,7 @@ li {
 #places {
 	background-color: rgba(147, 219, 249, 0.2);
 	width: 20%;
-	height: 84%;
+	max-height: 84%;
 	position: absolute;
 	top: 111px;
 	right: 25%;
@@ -167,10 +170,15 @@ li {
 	color: white;
 	text-shadow: 2px 2px 4px #000000;
 	font-size: 1em;
+	background-color:#737477;
 }
 
-.wrap-collapsible{
-	background-color:#737477;
+#itinerary .wrap-collapsible{
+	background-color: #0480B2;
+}
+
+#itinerary label {
+	background-color: rgb(86, 174, 209);
 }
 
 #itinerary {
@@ -184,7 +192,7 @@ li {
 	right: 0;
 	margin-right: 50px;
 	margin-top: 111px;
-	height: 84%;
+	max-height: 84%;
 	overflow: hidden;
 	border-radius: 10px;
 	overflow: scroll;
@@ -312,9 +320,12 @@ input[type='checkbox'] {
 	/* background: rgba(250, 224, 66, .2);
 	border-bottom: 1px solid rgba(250, 224, 66, .45); */
   
-	padding: .5rem 1rem;
+	padding: .1rem .2rem;
   }
   
+  .content-inner ul {
+	  margin-bottom: 5px;
+  }
   .collapsible-content {
 	max-height: 0px;
 	overflow: hidden;
@@ -344,52 +355,7 @@ input[type='checkbox'] {
 	list-style-type: none;
   }
 
-  /* Tooltip styles */
-  /* Tooltip container */
-.tooltip {
-    position: relative;
-    display: inline-block;
-}
-
-/* Tooltip text */
-.tooltip .tooltiptext {
-    visibility: hidden;
-    width: 65px;
-    background-color: #cbcdd8;
-    color: black;
-    text-align: center;
-    font-size: 0.5em;
-    padding: 5px 0;
-    border-radius: 6px;
-
-    /* Position the tooltip text */
-    position: absolute;
-    z-index: 1;
-    bottom: 60%;
-    left: 60%;
-    margin-left: -60px;
-
-    /* Fade in tooltip */
-    opacity: 0;
-    transition: opacity 0.3s;
-}
-
-.tooltip .tooltiptext::after {
-    content: "";
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    margin-left: -5px;
-    border-width: 5px;
-    border-style: solid;
-    border-color: #cbcdd8 transparent transparent transparent;
-}
-
-.tooltip:hover .tooltiptext {
-    visibility: visible;
-    opacity: 1;
-}
-
+/* Responsive  */
 
 /*macBook Pro */
  @media only screen and (max-width: 1380px) {
@@ -419,28 +385,76 @@ input[type='checkbox'] {
 	 #map {
 		 width: 90%;
 		 height: 50%;
+		 margin-bottom: 10px;
 	 }
 	 #places {
 		width: 90%;
-		height: 20%;
-		position: absolute;
-		top: 50%;
-		left: 5%;;
-		background-color: #737477
-		text-align: center;
-		top: 64%;
+		max-height: 25%;
+		overflow: scroll;
+		position: static;
+		background-color: #505153;
+		margin: 0 auto;
 	 }
 	 #itinerary {
-		 display: block;
-		 left: 5%;
 		 width: 90%;
-		 height: 20%;
+		 max-height: 21%;
 		 overflow: scroll;
-		 position: relative;
-		 bottom: 
+		 position: static;
 		 margin: 0 auto;
 	 }
 	 #exploration {
+		 position: static;
 		 overflow: scroll;
 	 }
+	 #exploration h1 {
+		 position: static;
+		 width: 100%;
+		 margin: 0 auto;
+		 font-size: 2.5em;
+		 text-align: center;
+	 }
+	 
+	 .lbl-toggle{
+		padding: 0 10px;
+	 }
+	 .day {
+		 font-size: .8em;
+	 }
  }
+
+ @media only screen and (max-width: 768px){
+	 #map, #places, #itinerary{
+		 width: 100%;
+		 margin: 0 auto;
+		 border-radius: 0;
+	 }
+	 #splash h1, #splash-2 h1 {
+		 font-size: 3em;
+		 width: 720px;
+	 }
+ }
+
+ @media only screen and (max-width: 414px){
+	#splash h1, #splash-2 h1 {
+		font-size: 2em;
+		width: 400px;
+	}
+	#trip-form h2 {
+		font-size: 1.5em;
+	}
+	#pac-input.controls {
+		width: 300px;
+	}
+	#places h2, #itinerary h2, #splash-2 h2 {
+		font-size: 1.2em;
+	}
+	#splash-2 h1, #splash2-2 h2 {
+		width: 300px;
+	}
+	#places label, #itinerary label {
+		font-size: 1.2em;
+	}
+	#exploration h1 {
+		font-size: 2em;
+	}
+}

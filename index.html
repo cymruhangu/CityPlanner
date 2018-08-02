@@ -1,6 +1,6 @@
 <html lang="en">
 <head>
-	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1" name="description" content="City Planner">
   <title>MK's City Planner</title>
   <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.1.1/normalize.min.css">
   <link rel="stylesheet" href="main.css">
@@ -10,25 +10,25 @@
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
 </head>
 <body>
-  <main>
+  <main role="main">
     <section id="splash" role="region">
       <div id="intro">
         <h1 id="intro1">Five Days in the City</h1>
-        <h1 id="intro2">Plan and Visualize Your Visit</h1>
+        <h1 id="intro2">Plan & Map a Visit</h1>
         <h1 id="intro3">Create an Itinerary</h1>
         <h1 id="intro4">Where do you want to explore?</h1>
         <form id="trip-form">
             <label><h2 id="city-select">Select a City:</h2>
-              <select id="city" size="1" required>
+              <select id="city" size="1" required role="listbox">
                 <option value="" disabled selected>Select your city</option>
-                <option value="NY">New York</option>
-                <option value="PHL">Philadelphia</option>
-                <option value="BSTN">Boston</option>
-                <option value="DC">Washington</option>
-                <option value="CHI">Chicago</option>
-                <option value="NOLA">New Orleans</option>
-                <option value="MTL">Montreal</option>
-                <option value="TO">Toronto</option>
+                <option value="NY" role="option">New York</option>
+                <option value="PHL" role="option">Philadelphia</option>
+                <option value="BSTN"role="option">Boston</option>
+                <option value="DC" role="option">Washington</option>
+                <option value="CHI" role="option">Chicago</option>
+                <option value="NOLA" role="option">New Orleans</option>
+                <option value="MTL" role="option">Montreal</option>
+                <option value="TO" role="option">Toronto</option>
               </select>
             </label> 
           <button type="submit">Submit</button>  

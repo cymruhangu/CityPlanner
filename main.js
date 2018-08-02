@@ -10,12 +10,12 @@ const cityCenters = {
         "PHL":{
           name: "Philadelphia",
           center: {lat: 39.9526, lng: -75.1652},
-          img: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/Philadelphia_skyline_from_the_southwest_2015.jpg/1024px-Philadelphia_skyline_from_the_southwest_2015.jpg"
+          img: "./assets/philadelphia-70850_1280.jpg"
         },
         "BSTN":{
           name: "Boston",
           center: {lat: 42.3601, lng: -71.0589},
-          img: "https://images.unsplash.com/photo-1520461589603-5158b75e6663?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=3a1c8ae9cb4345a4120d70540a5de145&auto=format&fit=crop&w=1952&q=80"
+          img: "./assets/boston-1775870_1280.jpg"
         },
         "DC":{
           name: "Washington DC",
@@ -25,7 +25,7 @@ const cityCenters = {
         "CHI":{
           name: "Chicago",
           center: {lat: 41.8781, lng: -87.6298},
-          img: "https://images.unsplash.com/photo-1422393462206-207b0fbd8d6b?ixlib=rb-0.3.5&s=b06c1fb67e23344ffc685dccbd6e78d8&auto=format&fit=crop&w=1950&q=80"
+          img: "./assets/chicago-1791002_1280.jpg"
         },
         "NOLA": {
           name: "New Orleans",
@@ -100,7 +100,7 @@ function initMap() {
   function showDatePicker(){
     $('#splash').fadeOut(600, function(){
       $('#splash-2').fadeIn(600);
-      getArrival();
+      handleArrivalDateSubmission();
     });
   }
 
@@ -118,8 +118,7 @@ function initMap() {
   }
 
 //User selects arrival date, handle date
-//handleArrivalDateSubmission
-function getArrival(){
+function handleArrivalDateSubmission(){
   $('#date-form').submit(function(e){
     e.preventDefault();
     const first = moment(new Date($('#arrive').val()));
@@ -178,17 +177,18 @@ function createItinerary(firstDay){
   }
   updateSchedule();
 }
-
-//Create the html for #itinerary
+//create and update itinerary when place is scheduled
 function updateSchedule(){
   $('#itinerary').html('<h2>Itinerary:</h2>');
   itinerary.forEach(function(day, i){ 
     //below to different function
     let dateCard = `
-      <div id="day${i}" class="dayDiv">
-        <p class="day">${moment(itinerary[i].date).format("ddd,ll")}:</p>`;
-    dateCard+=`
-        <ul class="am">`;
+      <div id="day${i}" class="wrap-collapsible">
+        <input id="collapsible2-${i}" class="toggle" type="checkbox">
+        <label for="collapsible2-${i}" class="lbl-toggle">${moment(itinerary[i].date).format("ddd,ll")}</label>
+        <div class="collapsible-content">
+          <div class="content-inner">
+            <ul class="am">`;
     itinerary[i].places.am.forEach(function(e){
       dateCard+=`<li>AM:     ${e}</li>`;
     });
@@ -202,7 +202,9 @@ function updateSchedule(){
     itinerary[i].places.eve.forEach(function(e){
       dateCard+=`<li>EVE:   ${e}</li>`;
     });
-    dateCard+= `</ul>
+    dateCard +=`</ul>
+          </div>
+        </div>
       </div>`;
     $('#itinerary').append(dateCard);
   }
@@ -274,7 +276,7 @@ function updatePlaces(){
     if(place.name === undefined){
       return;
     }
-    const placeHTML = renderPlacesHTML(place, i);
+    const placeHTML = generatePlacesHTML(place, i);
     $('#places').append(placeHTML);
     setButtonStatus(i);
     addPlaceListeners(i);
@@ -283,8 +285,7 @@ function updatePlaces(){
 }
 
 //generate HTML for each place
-//generateHTML---
-function renderPlacesHTML(place,i){
+function generatePlacesHTML(place,i){
   return  `
     <div id="wrap-collapsible-${i}" class="wrap-collapsible">
         <input id="collapsible-${i}" class="toggle" type="checkbox">
@@ -303,7 +304,7 @@ function renderPlacesHTML(place,i){
             <button id="return-${i}" class="return" type="button">return</button>
           </div>
           <form id="sched-form-${i}" class="sched-form">
-            <select id="day-time" size=1 required>
+            <select id="day-time-${i}" size=1 required>
               <option value="" disabled selected>choose day</option>
               <option value="0">${moment(itinerary[0].date).format("ddd,ll")}</option>
               <option value="1">${moment(itinerary[1].date).format("ddd,ll")}</option>
@@ -467,7 +468,7 @@ function createMarker(place, index) {
     infowindow.open(map, this);
   }, function(place, status){
     if (status === google.maps.places.PlacesServiceStatus.OK){
-      // do I need this callback for anything?
+      //? 
     }
   });
 }
@@ -504,7 +505,7 @@ function addReturnListener(){
 function addSchedListener(index){
   $(`#sched-form-${index}`).submit(function(e){
     e.preventDefault();
-    const date = $(`#sched-form-${index} select#day-time`).find('option:selected').val();
+    const date = $(`#sched-form-${index} select#day-time-${index}`).find('option:selected').val();
     const period = $(`#sched-form-${index} select#period`).find('option:selected').val();
     
     //set schedule
@@ -523,7 +524,7 @@ function addSchedListener(index){
 }
 
 //unschedule Place
-//candidate for refactor
+//candidate for REFACTOR
 function addUnschedListener(index){
   $(`#unsched-${index}`).click(function(e){
     console.log(`#unsched-${index} clicked`);
@@ -592,8 +593,6 @@ function setCoords(index){
 
 //Add a marker for a new place
 function addMarker(index){
-  // let label = '';
-  // let id = '';
   const label = index === 0 ? 'H': `${index}`;
   let marker = new google.maps.Marker({
     position: myPlaces[index].LatLng,
@@ -617,9 +616,7 @@ function addMarker(index){
   });
 }
 showSplash();
-}//new end of initMap
-
-
+}
 //==========================
 return {initMap:initMap}
 }();
