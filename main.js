@@ -182,33 +182,39 @@ function updateSchedule(){
   $('#itinerary').html('<h2>Itinerary:</h2>');
   itinerary.forEach(function(day, i){ 
     //below to different function
-    let dateCard = `
-      <div id="day${i}" class="wrap-collapsible">
-        <input id="collapsible2-${i}" class="toggle" type="checkbox">
-        <label for="collapsible2-${i}" class="lbl-toggle">${moment(itinerary[i].date).format("ddd,ll")}</label>
-        <div class="collapsible-content">
-          <div class="content-inner">
-            <ul class="am">`;
-    itinerary[i].places.am.forEach(function(e){
-      dateCard+=`<li>AM:     ${e}</li>`;
-    });
-    dateCard+=`</ul> 
-        <ul class="pm">`;
-    itinerary[i].places.pm.forEach(function(e){
-      dateCard+=`<li>PM:   ${e}</li>`;
-    });
-    dateCard+=`</ul>
-        <ul class="night">`;
-    itinerary[i].places.eve.forEach(function(e){
-      dateCard+=`<li>EVE:   ${e}</li>`;
-    });
-    dateCard +=`</ul>
-          </div>
-        </div>
-      </div>`;
+    let dateCard = createItineraryHTML(i);
     $('#itinerary').append(dateCard);
   }
   );}
+
+//create itinerary HTML
+function createItineraryHTML(i){
+  let tmpStr = `
+      <div id="day${i}" class="wrap-collapsible">
+        <input id="collapsible2-${i}" class="toggle" type="checkbox" aria-expanded="false" aria-controls="collapsible2-${i}">
+        <label for="collapsible2-${i}" class="lbl-toggle">${moment(itinerary[i].date).format("ddd,ll")}</label>
+        <div class="collapsible-content" aria-hidden="true">
+          <div class="content-inner">
+            <ul class="am">`;
+    itinerary[i].places.am.forEach(function(e){
+      tmpStr+=`<li>AM:     ${e}</li>`;
+    });
+    tmpStr+=`</ul> 
+        <ul class="pm">`;
+    itinerary[i].places.pm.forEach(function(e){
+      tmpStr+=`<li>PM:   ${e}</li>`;
+    });
+    tmpStr+=`</ul>
+        <ul class="night">`;
+    itinerary[i].places.eve.forEach(function(e){
+    tmpStr+=`<li>EVE:   ${e}</li>`;
+    });
+    tmpStr +=`</ul>
+          </div>
+        </div>
+      </div>`;
+    return tmpStr;
+}
 
 //call AC function
 placeSelection(map);
@@ -278,8 +284,8 @@ function updatePlaces(){
     }
     const placeHTML = generatePlacesHTML(place, i);
     $('#places').append(placeHTML);
-    setButtonStatus(i);
-    addPlaceListeners(i);
+    setButtonDisplay(i);
+    bindEventListeners(i);
   });
   $('#places').fadeIn(600);
 }
@@ -288,9 +294,9 @@ function updatePlaces(){
 function generatePlacesHTML(place,i){
   return  `
     <div id="wrap-collapsible-${i}" class="wrap-collapsible">
-        <input id="collapsible-${i}" class="toggle" type="checkbox">
+        <input id="collapsible-${i}" class="toggle" type="checkbox" aria-expanded="false" aria-controls="collabpsible-${i}>
         <label for="collapsible-${i}" class="lbl-toggle">${i === 0?'H':i}. ${myPlaces[i].name}</label>
-        <div class="collapsible-content">
+        <div class="collapsible-content" aria-hidden="true">
           <ul class="place-info:">
             <li>${place.vicinity!==undefined?place.vicinity:''}</li>
             <li>${place.phone !==undefined?place.phone:''}</li>
@@ -326,8 +332,7 @@ function generatePlacesHTML(place,i){
     </div>`;
 }
 
-function setButtonStatus(index){  
-  //CHAIN THESE ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^split to differient functions DRY
+function setButtonDisplay(index){  
   $('.return').css('display', 'none');
     if(myPlaces[index].scheduled){
       $(`#schedule-${index}, #delete-${index}`).css('display', 'none');
@@ -340,9 +345,14 @@ function setButtonStatus(index){
 }
 //---------
 // Should be 3 separate functions
-//not handling unschedule
-//bindEventListeners function 
-function addPlaceListeners(index) {
+function bindEventListeners(index){
+  bindDelete(index);
+  bindSchedule(index);
+  //bindUnschedule(index);
+  bindExplore(index);
+}
+
+function bindDelete(index){
   $(`#delete-${index}`).click(function(e){
     e.preventDefault();
     //if index = 0, c
@@ -358,25 +368,30 @@ function addPlaceListeners(index) {
       updatePlaces();
     }
   });
+}
 
+//bind schedule
+function bindSchedule(index){
   $(`#schedule-${index}`).click(function(e){
     e.preventDefault();
-    $(`#schedule-${index}`).fadeOut(400, function(){  //CHAIN THESE*********
-      $(`#delete-${index}`).fadeOut(400, function(){
+    $(`#schedule-${index}, #delete-${index}`).fadeOut(400, function(){ 
         $(`#sched-form-${index}`).fadeIn(400, function(){
-          addSchedListener(index);
+          bindSchedFormListener(index);
         });
-      });
     });
   });
+}
+
+//bind Explore
+function bindExplore(index){
   $(`#explore-${index}`).click(function(e){
     e.preventDefault();
-    launchExplore(index);
+    launchNearby(index);
   });
 }
 
 //Zoom in on place and reveal Nearby form underneath.
-function launchExplore(index){
+function launchNearby(index){
   map.panTo(myPlaces[index].LatLng);
   map.setZoom(16);
   $(`#delete-${index}, #schedule-${index}, #explore-${index}`).fadeOut(400);
@@ -500,42 +515,46 @@ function addReturnListener(){
   });
 }
 
-//add schedule button listener & add place to itinerary
-//this function does too much - REFACTOR
-function addSchedListener(index){
+//add schedule button listener & get input
+function bindSchedFormListener(index){
   $(`#sched-form-${index}`).submit(function(e){
     e.preventDefault();
     const date = $(`#sched-form-${index} select#day-time-${index}`).find('option:selected').val();
     const period = $(`#sched-form-${index} select#period`).find('option:selected').val();
-    
     //set schedule
-    const thisPlace = myPlaces[index].name;
+    schedulePlace(index, date, period);
+  });
+}
+
+function schedulePlace(index, date, period){
+  const thisPlace = myPlaces[index].name;
     myPlaces[index].scheduled = true;
     myPlaces[index].schedDay[date] = period;
-    addUnschedListener(index);
     if(!itinerary[date].places[period].includes(thisPlace)){
       itinerary[date].places[period].push(thisPlace);
     };
     $(`#sched-form-${index}`).fadeOut(300, function(){
+      //bind unsched listener here?
+      addUnschedListener(index);
       $(`#unsched-${index}`).fadeIn(300);
     });
     updateSchedule();
-  });
-}
+  }
 
-//unschedule Place
-//candidate for REFACTOR
+//unschedule Place  REFACTOR?
 function addUnschedListener(index){
   $(`#unsched-${index}`).click(function(e){
     console.log(`#unsched-${index} clicked`);
     myPlaces[index].scheduled = false;
     //find which day/time scheduled
-    const dayTime = findDayTime(index);
+    let dayTime = findDayTime(index);
     const day = dayTime[0];
     const time = dayTime[1];
     const name = myPlaces[index].name;
     //remove place from itinerary[day].places[time]
-    const x = itinerary[day].places[time].indexOf(name);
+    console.log(`day is ${day} time is ${time} name is ${name}`);
+    console.log(itinerary[day].places[time]);
+    const x = itinerary[day].places[time].indexOf(name); //???????
     //place empty string in myPlaces[index].schedDay
     itinerary[day].places[time].splice(x, 1);
     //hide unsched, reveal delete and sched
