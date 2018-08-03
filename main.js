@@ -191,9 +191,9 @@ function updateSchedule(){
 function createItineraryHTML(i){
   let tmpStr = `
       <div id="day${i}" class="wrap-collapsible">
-        <input id="collapsible2-${i}" class="toggle" type="checkbox" aria-expanded="false" aria-controls="collapsible2-${i}">
+        <input id="collapsible2-${i}" class="toggle" type="checkbox">
         <label for="collapsible2-${i}" class="lbl-toggle">${moment(itinerary[i].date).format("ddd,ll")}</label>
-        <div class="collapsible-content" aria-hidden="true">
+        <div class="collapsible-content">
           <div class="content-inner">
             <ul class="am">`;
     itinerary[i].places.am.forEach(function(e){
@@ -294,9 +294,9 @@ function updatePlaces(){
 function generatePlacesHTML(place,i){
   return  `
     <div id="wrap-collapsible-${i}" class="wrap-collapsible">
-        <input id="collapsible-${i}" class="toggle" type="checkbox" aria-expanded="false" aria-controls="collabpsible-${i}>
+        <input id="collapsible-${i}" class="toggle" type="checkbox">
         <label for="collapsible-${i}" class="lbl-toggle">${i === 0?'H':i}. ${myPlaces[i].name}</label>
-        <div class="collapsible-content" aria-hidden="true">
+        <div class="collapsible-content">
           <ul class="place-info:">
             <li>${place.vicinity!==undefined?place.vicinity:''}</li>
             <li>${place.phone !==undefined?place.phone:''}</li>
