@@ -137,7 +137,7 @@ function setDateHTML(firstDate){
 
 //reveal 2nd splash page
 function revealSplash2(){
-$('#date-form, #splash2-2').fadeOut(900, function(){
+$('#date-form').fadeOut(900, function(){
       $('#splash2-3').fadeIn(900, function(){
         $('#splash2-3').fadeOut(900, function(){
           $('#splash2-4, #splash2-5').fadeIn(1400, function(){

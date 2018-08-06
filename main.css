@@ -3,8 +3,8 @@
 }
 
 body, main {
+	height: 850px;
 	width: 100%;
-	height: 100%;
 	overflow: hidden;
 }
 
@@ -68,7 +68,8 @@ button[type=submit] {
 	margin: 0 auto;
 }
 #splash-2 h2{
-	width: 600px;
+	/* width: 600px; */
+	font-size: 13m;
 	margin: 0 auto;
 }
 #exploration h1 {
@@ -448,7 +449,7 @@ input[type='checkbox'] {
 	#places h2, #itinerary h2, #splash-2 h2 {
 		font-size: 1.2em;
 	}
-	#splash-2 h1, #splash2-2 h2 {
+	#splash-2 h1 {
 		width: 300px;
 	}
 	#places label, #itinerary label {
