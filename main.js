@@ -303,10 +303,10 @@ function generatePlacesHTML(place,i){
             <li><a href="${place.url}" target="_blank">${place.url !==undefined?place.web:''}</a></li>
           </ul>
           <div class="btn-container">
-            <button type="button" id="delete-${i}" class="delete">${i===0?'change':'<i class="fas fa-trash-alt"></i>'}</button>
+            <button type="button" id="delete-${i}" class="delete" aria-label="delete">${i===0?'change':'<i class="fas fa-trash-alt"></i>'}</button>
             <button type="button" id="schedule-${i}" class="schedule" ${i ===0?'hidden':''}>schedule</button>
             <button type="button" id="unsched-${i}" class="unsched">unschedule</button>
-            <button type="button" id="explore-${i}" class="explore"><i class="fas fa-search-plus"></i></button>
+            <button type="button" id="explore-${i}" class="explore" aria-label="explore"><i class="fas fa-search-plus"></i></button>
             <button id="return-${i}" class="return" type="button">return</button>
           </div>
           <form id="sched-form-${i}" class="sched-form">
@@ -318,7 +318,7 @@ function generatePlacesHTML(place,i){
               <option value="3">${moment(itinerary[3].date).format("ddd,ll")}</option>
               <option value="4">${moment(itinerary[4].date).format("ddd,ll")}</option>
             </select>
-            <select id="period" size=1 required>
+            <select class="period" size=1 required>
               <option value="" disabled selected>time of day</option>
               <option value="am">morning</option>
               <option value="pm">afternoon</option>
