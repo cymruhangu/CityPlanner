@@ -528,6 +528,7 @@ function bindSchedFormListener(index){
 
 function schedulePlace(index, date, period){
   const thisPlace = myPlaces[index].name;
+  console.log(`period is ${period}`);
     myPlaces[index].scheduled = true;
     myPlaces[index].schedDay[date] = period;
     if(!itinerary[date].places[period].includes(thisPlace)){

@@ -3,9 +3,11 @@
 }
 
 body, main {
-	height: 850px;
+	height: 100vh;
 	width: 100%;
 	overflow: hidden;
+	margin: 0;
+	padding: 0;
 }
 
 #splash {
@@ -68,7 +70,6 @@ button[type=submit] {
 	margin: 0 auto;
 }
 #splash-2 h2{
-	/* width: 600px; */
 	font-size: 13m;
 	margin: 0 auto;
 }
