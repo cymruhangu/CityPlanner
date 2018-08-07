@@ -522,12 +522,15 @@ function bindSchedFormListener(index){
     const date = $(`#sched-form-${index} select#day-time-${index}`).find('option:selected').val();
     const period = $(`#sched-form-${index} select#period`).find('option:selected').val();
     //set schedule
+    console.log(`period is ${date}`);
+    console.log(`index is ${index}`);
     schedulePlace(index, date, period);
   });
 }
 
 function schedulePlace(index, date, period){
   const thisPlace = myPlaces[index].name;
+  console.log(`period is ${period}`);
     myPlaces[index].scheduled = true;
     myPlaces[index].schedDay[date] = period;
     if(!itinerary[date].places[period].includes(thisPlace)){
