@@ -66,7 +66,8 @@ function initMap() {
   map = new google.maps.Map(document.getElementById('map'), {
     center: cityCenter,
     zoom: 12,
-    gestureHandling: 'cooperative'
+    gestureHandling: 'cooperative',
+    disableDefaultUI: true
   });
 
   //reveal splash page and city select form
@@ -261,9 +262,10 @@ function Place (name, address, placeID, phone, website, reviews, rating, price, 
   this.phone = phone;
   this.url = website;
   if(this.url){
-    let x = website.indexOf('//');
-    let y = website.slice(x+2);
-    this.web = y.substr(0, y.length -1);
+    const x = website.indexOf('//');
+    const y = website.slice(x+2);
+    const lastChar = y.charAt(y.length -1);
+    this.web = lastChar === '/' ? y.substr(0, y.length -1): y.substr(0, y.length);
   }
   this.reviews = reviews;
   this.rating = rating;
