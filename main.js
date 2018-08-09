@@ -522,34 +522,30 @@ function bindSchedFormListener(index){
   $(`#sched-form-${index}`).submit(function(e){
     e.preventDefault();
     const date = $(`#sched-form-${index} select#day-time-${index}`).find('option:selected').val();
-    const period = $(`#sched-form-${index} select#period`).find('option:selected').val();
+    const period = $(`#sched-form-${index} select.period`).find('option:selected').val();
     //set schedule
-    console.log(`period is ${date}`);
-    console.log(`index is ${index}`);
     schedulePlace(index, date, period);
   });
 }
 
 function schedulePlace(index, date, period){
   const thisPlace = myPlaces[index].name;
-  console.log(`period is ${period}`);
-    myPlaces[index].scheduled = true;
-    myPlaces[index].schedDay[date] = period;
-    if(!itinerary[date].places[period].includes(thisPlace)){
-      itinerary[date].places[period].push(thisPlace);
-    };
-    $(`#sched-form-${index}`).fadeOut(300, function(){
-      //bind unsched listener here?
-      addUnschedListener(index);
-      $(`#unsched-${index}`).fadeIn(300);
-    });
-    updateSchedule();
+  myPlaces[index].scheduled = true;
+  myPlaces[index].schedDay[date] = period;
+  if(!itinerary[date].places[period].includes(thisPlace)){
+    itinerary[date].places[period].push(thisPlace);
+  };
+  $(`#sched-form-${index}`).fadeOut(300, function(){
+    //bind unsched listener here?
+    addUnschedListener(index);
+    $(`#unsched-${index}`).fadeIn(300);
+  });
+  updateSchedule();
   }
 
 //unschedule Place  REFACTOR?
 function addUnschedListener(index){
   $(`#unsched-${index}`).click(function(e){
-    console.log(`#unsched-${index} clicked`);
     myPlaces[index].scheduled = false;
     //find which day/time scheduled
     let dayTime = findDayTime(index);
@@ -557,9 +553,7 @@ function addUnschedListener(index){
     const time = dayTime[1];
     const name = myPlaces[index].name;
     //remove place from itinerary[day].places[time]
-    console.log(`day is ${day} time is ${time} name is ${name}`);
-    console.log(itinerary[day].places[time]);
-    const x = itinerary[day].places[time].indexOf(name); //???????
+    const x = itinerary[day].places[time].indexOf(name);
     //place empty string in myPlaces[index].schedDay
     itinerary[day].places[time].splice(x, 1);
     //hide unsched, reveal delete and sched

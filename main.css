@@ -311,22 +311,16 @@ input[type='checkbox'] {
   .lbl-toggle::before {
 	content: ' ';
 	display: inline-block;
-  
 	border-top: 5px solid transparent;
 	border-bottom: 5px solid transparent;
 	border-left: 5px solid currentColor;
-  
 	vertical-align: middle;
 	margin-right: .7rem;
 	transform: translateY(-2px);
-  
 	transition: transform .2s ease-out;
   }
   
   .collapsible-content .content-inner {
-	/* background: rgba(250, 224, 66, .2);
-	border-bottom: 1px solid rgba(250, 224, 66, .45); */
-  
 	padding: .1rem .2rem;
   }
   
