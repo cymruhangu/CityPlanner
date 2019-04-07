@@ -1,6 +1,15 @@
 ## CityPlanner Synopsis
 This application is a planning and itineary tool that allows the user to research, visualize, and plan a trip to a city or region. The Google Map API is used along with Google Places and autocomplete functionality to accomplish this.  If time and project scope allow an additional restaurant API (Yelp, OpenTable) will also be integrated.
 
+Technology:
+---------
+HTML5, CSS, Javascript, jQuery, Node, Express, mongoDB
+
+![screenshot of the dashboard](assets/CityPlanner1.png)
+![screenshot of the dashboard](assets/CityPlanner2.png)
+![screenshot of the dashboard](assets/CityPlanner3.png)
+![screenshot of the dashboard](assets/CityPlanner4.png)
+
 ## Code Example
 Calls to the Google Maps IP are made as follows:
    
@@ -28,8 +37,4 @@ TBD
 NA
 
 ## License
-<<<<<<< HEAD
 NA
-=======
-NA
->>>>>>> 61735cd9618d63374d234de3d8271706462cf031
