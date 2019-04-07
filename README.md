@@ -3,11 +3,17 @@ This application is a planning and itineary tool that allows the user to researc
 
 Technology:
 ---------
-HTML5, CSS, Javascript, jQuery, Node, Express, mongoDB
+HTML5, CSS, Javascript, jQuery, Google Maps API
 
+App Flow:
+---------
+Select a city from the dropdown menu:
 ![screenshot of the dashboard](assets/CityPlanner1.png)
+Select an arrival date:
 ![screenshot of the dashboard](assets/CityPlanner2.png)
+Choose a hotel first then choose places you'd like to visit:
 ![screenshot of the dashboard](assets/CityPlanner3.png)
+Schedule a visit to place, zoom in on the surrounding area to see or search for nearby places, or delete the place:
 ![screenshot of the dashboard](assets/CityPlanner4.png)
 
 ## Code Example
