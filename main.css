@@ -8,6 +8,7 @@ body, main {
 	overflow: hidden;
 	margin: 0;
 	padding: 0;
+	font-family: 'Roboto Condensed', sans-serif;
 }
 
 #splash {
@@ -438,13 +439,30 @@ input[type='checkbox'] {
  @media only screen and (max-width: 414px){
 	#splash h1, #splash-2 h1 {
 		font-size: 2em;
-		width: 400px;
+		width: 300px;
+	}
+	h1#intro4{
+		font-size: 1.5em;
+		margin: 0 auto;
 	}
 	#trip-form h2 {
-		font-size: 1.5em;
+		font-size: 1em;
+	}
+	#date-form {
+		padding-top: 100px;
+	}
+	#date-form input[type="date"]{
+		width: 160px;
+		height: 30px;
+	}
+	#trip-form button, #date-form button {
+		width: 100px;
+		display: block;
+		margin: 0 auto;
 	}
 	#pac-input.controls {
-		width: 300px;
+		width: 250px;
+		background-color: white;
 	}
 	#places h2, #itinerary h2, #splash-2 h2 {
 		font-size: 1.2em;
