@@ -1,5 +1,5 @@
 ## CityPlanner Synopsis
-This application is a planning and itineary tool that allows the user to research, visualize, and plan a trip to a city or region. The Google Map API is used along with Google Places and autocomplete functionality to accomplish this.  If time and project scope allow an additional restaurant API (Yelp, OpenTable) will also be integrated.
+This application is a planning and itinerary tool that allows the user to research, visualize, and plan a trip to a city or region. The Google Map API is used along with Google Places and autocomplete functionality to accomplish this.  If time and project scope allow an additional restaurant API (Yelp, OpenTable) will also be integrated.
 
 Technology:
 ---------
